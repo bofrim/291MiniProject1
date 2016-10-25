@@ -21,8 +21,10 @@ class Login:
     # Ensure the user is a valid user and entered their valid password
     def validateLogin(self, login, passwordHash, c):
         c.execute('SELECT staff_id FROM staff WHERE login=:login AND password=:password', {"login": login, "password": passwordHash})
-        staff_id = c.fetchone()[0]
-        return staff_id
+        staff_id = c.fetchone()
+        if staff_id is not None:
+            return staff_id[0]
+        else: return None
 
     # Return a character that signifies what type of user the user is
     def getRole(self, c, staff_id):
