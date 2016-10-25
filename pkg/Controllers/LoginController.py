@@ -4,6 +4,25 @@ class Login:
     #initialization of a login class should start the program
     #user logs in and is directed to views with their functionality
 
+    def loginNurse(staff_id):
+        # Create a Nurse
+        print "Hello Nurse"
+
+    def loginDocter(staff_id):
+        # Create a Docter
+        print "Hello doctor"
+
+    def loginAdmin(staff_id):
+        # Create an admin
+        print "Hello Admin"
+
+    loginAs = {
+    "N":loginNurse,
+    "D":loginDocter,
+    "A":loginAdmin
+    }
+
+
     def loginLogic(self, c):
         #Control the logical flow of the login operations
 
@@ -12,7 +31,8 @@ class Login:
         if staff_id is not None :
             print "logged in"
             role = self.getRole(c, staff_id)
-            print "You are a:" + role
+            self.loginAs[role](staff_id)
+
         else:
             print "Login Failed\n"
 
