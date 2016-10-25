@@ -8,7 +8,7 @@ def getPatientCharts(c, patientHcno):
         ORDER BY adate;
             ''', patientHcno)
     print "Patient: ", patientHcno , "\n"
-    print c.fetchAll()    
+    print c.fetchAll()
 
 def getChartInfo(c, patientHcno, patientChartID):
     c.execute('''
@@ -98,7 +98,3 @@ def hasChartOpen(c, patientChartId):
 
 def commit():
     conn.commit()
-
-
-
-
