@@ -1,5 +1,6 @@
 from pkg.Controllers import *
 import sqlite3
+from sqlite3 import OperationalError
 
 def executeScriptsFromFile(filename):
     # Open and read sql file

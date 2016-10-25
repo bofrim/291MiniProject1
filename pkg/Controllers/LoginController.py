@@ -10,10 +10,11 @@ class Login:
         #Control the logical flow of the login operations
 
         userName, passwordHash = loginView.getlogin()
-        if self.validateLogin(userName, passwordHash, c) is not False :
+        staff_id = self.validateLogin(userName, passwordHash, c)
+        if staff_id is not False :
             print "logged in"
-            staff_id = self.validateLogin(userName, passwordHash, c)
-            getRole(c, staff_id)
+            role = getRole(c, staff_id)
+            print "You are a:" + role
         else:
             print "Login Failed\n"
             loginLogic(self, c)
@@ -30,4 +31,4 @@ class Login:
     # Return a character that signifies what type of user the user is
     def getRole(c, staff_id):
         c.execute('SELECT role FROM staff WHERE staff_id=:staff_id', {"staff_id": staff_id})
-        return(return c.fetchone[0])
+        returnc.fetchone[0]
