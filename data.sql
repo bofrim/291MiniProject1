@@ -17,8 +17,9 @@
 
 -- staff(staff_id, role, name, login, password)
 INSERT INTO staff VALUES
-('12345', 'D', 'Ricardo', 'r.cardo', 'password123456'),
-('54321', 'N', 'Butch', 'b.utch', 'ClockwiseVagina99');
+('12345', 'D', 'Ricardo', 'r.cardo', '54f606d384b209f39c1ca11d4a0592e355e625a19d07f9c3c07e71a5'),
+--Password for above is password123456
+('54321', 'N', 'Butch', 'b.utch', '774f27073b126b5ef351236d6d0879d8b06002e0aea223ca88c2b381');
 
 
 -- patients(hcno, name, age_group, address, phone, emg_phone)
