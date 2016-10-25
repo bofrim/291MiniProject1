@@ -1,4 +1,5 @@
 from getpass import getpass
+import hashlib
 
 def SignInORSignUp():
     raw_input("Would you like to 'signIn' or 'signUp'?\n")
