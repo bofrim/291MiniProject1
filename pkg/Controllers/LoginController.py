@@ -1,4 +1,5 @@
-from ..Views.LoginViews import *
+from getpass import getpass
+import hashlib
 
 class Login:
     #initialization of a login class should start the program
@@ -56,3 +57,20 @@ class Login:
 
     def __init__(self, c):
         self.loginLogic(c)
+
+
+#______________________________________________________Views_________
+
+    def SignInORSignUp():
+        raw_input("Would you like to 'signIn' or 'signUp'?\n")
+
+    def getlogin():
+        login = raw_input("User name: ")
+        passwordHash = hashlib.sha224(getpass("Password: ")).hexdigest()
+        return(login, passwordHash)
+
+    def SignUp():
+        username = raw_input("Username: ")
+        password = raw_input("Password: ")
+        passwordHash = hashlib.sha224(password).hexdigest()
+        return(username, passwordHash)

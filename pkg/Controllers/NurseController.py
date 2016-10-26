@@ -1,4 +1,3 @@
-from ..Views.NurseViews import *
 from CareStaffController import CareStaff
 
 class Nurse(CareStaff):
@@ -62,3 +61,9 @@ class Nurse(CareStaff):
     "createChart" : ("Create a new chart for a specified patient.", createChart),
     "closeChart" : ("Close the specified patient's open chart.", closeChart)
     }
+
+#______________________________________________________Views_________
+
+    def override():
+        return raw_input("There is already an open chart for this patient."
+                        "Would you like to close it and open a new chart? (y/n): ")
