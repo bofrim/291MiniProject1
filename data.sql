@@ -1,25 +1,38 @@
--- Data prepared by Andrea Whittaker, amwhitta@ualberta.ca
--- Published on October 02, 2016
--- Edited by Rohan Rao on October 04, 2016
--- Edits Made:
--- patients table -> 1. More robust addresses
---                   2. Phone numbers were reformatted
---                   3. Few more tuples added
--- symptoms table -> 1. Few more tuples added
--- medications table -> 1. Few more tuples added
---                      2. Numbers were adjusted for certain tuples
--- misc -> 1. commented the locations of the tuples in symptoms and medications
--- Edited by Samuel Dolha on October 06, 2016
--- Edits Made:
--- Changed drug names to lowercase
--- Fixed typo "mortin" in medications table
--- Added a space before each city comment on the symptoms rows
+/*TESTING:
+    - Doctor query 1, use 64328.
+        Should see two charts for John
+    - Doctor query 4, prescribe 00372 with 2 aleve.
+        Should get a warning with too large of a prescription of aleve to Greg
+    - Doctor query 4, prescribe 64328 with aleve
+        Should recieve warning John is allergic to aleve
+    - Doctor query 4, prescribe 64328 with prozac
+        Should recieve warning John is allergic to aleve and so he may be allergic
+        to prozac
+
+    - Nurse query 1, create new table for 64328
+        Should be prompted with the option to close John's currently open table
+        and create a new one
+
+    - Administrative query 2, for drug category salicyclate
+        Should list
+          metformin prescribed amount=14 from 2000-05-16 03:21:40.066 to 2000-05-17 03:21:40.066
+          drugZ prescribed amount=11 from 2000-02-16 03:21:40.066 to 2000-02-17 03:21:40.066
+
+    - Administrative query 3, for diagnosis of depression
+        Should list medications after 2000-07-15 03:21:40.066
+          niacin, aleve
+            niacin is first because it is prescribed twice whereas aleve is
+            prescribed once after the diagnosis
+
+    - Administrative query 4, for drug_name ______
+
+    */
+
 
 -- staff(staff_id, role, name, login, password)
 INSERT INTO staff VALUES
-('12345', 'D', 'Ricardo', 'r.cardo', '54f606d384b209f39c1ca11d4a0592e355e625a19d07f9c3c07e71a5'),
---Password for above is password123456
-('54321', 'N', 'Butch', 'b.utch', '774f27073b126b5ef351236d6d0879d8b06002e0aea223ca88c2b381');
+('12345', 'D', 'Ricardo', 'r.cardo', 'password123456'),
+('54321', 'N', 'Butch', 'b.utch', 'ClockwiseVagina99');
 
 
 -- patients(hcno, name, age_group, address, phone, emg_phone)
@@ -35,6 +48,7 @@ INSERT INTO patients VALUES
 ('00372', 'Greg', '30-35', 'Toronto ON, 132 Street, 31 Ave, M4D1A7', '124-838-1117', '116-287-1789');
 
 -- charts(chart_id, hcno, adate, edate)
+-- no chart for Ashley and Kate
 INSERT INTO charts VALUES
 ('00001', '64328', "2000-01-12 03:21:40.066", "2000-06-14 03:21:40.066"), -- John
 ('00002', '64328', "2000-01-16 03:21:40.066", NULL),
@@ -47,7 +61,8 @@ INSERT INTO charts VALUES
 ('00009', '11137', "2000-05-12 03:21:40.066", "2000-05-14 03:21:40.066"), -- James
 ('00010', '11137', "2000-05-16 03:21:40.066", NULL),
 ('00011', '88163', "2000-06-16 03:21:40.066", "2000-06-20 03:21:40.066"), -- Rachel
-('00012', '35214', "2000-07-16 03:21:40.066", NULL); -- Ashley
+('00012', '35214', "2000-07-16 03:21:40.066", NULL), -- Ashley
+('00013', '00372', "2000-08-16 03:21:40.066", NULL); -- Greg
 
 
 -- symptoms(hcno, chart_id, staff_id, obs_date, symptom)
@@ -63,9 +78,6 @@ INSERT INTO symptoms VALUES
 ('75019', '00007', '54321', "2000-04-13 03:21:40.066", 'dizziness'), --Edmonton
 ('75019', '00008', '54321', "2000-04-17 03:21:40.066", 'heartburn'), --Edmonton
 ('75019', '00008', '54321', "2000-04-19 03:21:40.066", 'heartburn'), --Edmonton
--- ('00372', "2012-11-29 10:05:44.654", 'headache'), --Toronto
--- ('00372', "2013-03-02 15:32:07.159", 'dizziness'), --Toronto
--- ('00372', "2013-06-17 12:17:58.222", 'hypertension'), --Toronto
 ('11137', '00009', '12345', "2000-05-13 03:21:40.066", 'fever'), --Edmonton
 ('11137', '00010', '12345', "2000-05-17 03:21:40.066", 'wateryeyes'), --Edmonton
 ('64328', '00002', '12345', "2000-01-21 03:21:40.066", 'wateryeyes'), --Edmonton
@@ -75,14 +87,18 @@ INSERT INTO symptoms VALUES
 -- diagnoses(hcno, chart_id, staff_id, ddate, diagnosis)
 -- only into open charts
 INSERT INTO diagnoses VALUES
-('64328', '00002', '12345', "2000-01-17 03:21:40.066", 'dead'),
+('64328', '00002', '12345', "2000-01-17 03:21:40.066", 'deceased'),
 ('23769', '00004', '12345', "2000-02-17 03:21:40.066", 'insanity'),
 ('91623', '00006', '12345', "2000-03-17 03:21:40.066", 'frostbite'),
 ('75019', '00008', '12345', "2000-04-17 03:21:40.066", 'concussion'),
 ('11137', '00010', '12345', "2000-05-17 03:21:40.066", 'chicken pox'),
-('35214', '00012', '12345', "2000-07-17 03:21:40.066", 'depression');
+-- test for Administrative query 3
+('35214', '00012', '12345', "2000-07-15 03:21:40.066", 'depression');
 
 -- drugs(drug_name, category)
+-- salicyclate is test drug category for Administrative query 2.
+--    metformin prescribed amount=14 from 2000-05-16 03:21:40.066 to 2000-05-17 03:21:40.066
+--    drugZ prescribed amount=11 from 2000-02-16 03:21:40.066 to 2000-02-17 03:21:40.066
 INSERT INTO drugs VALUES
 ('abelcet', 'analgesic'),
 ('jardiance', 'anti-pyretic'),
@@ -91,7 +107,8 @@ INSERT INTO drugs VALUES
 ('obizur', 'analgesic'),
 ('motrin', 'anti-inflammatory'),
 ('aleve', 'anti-inflammatory'),
-('metformin', 'salicylate');
+('metformin', 'salicylate'),
+('drugZ', 'salicylate');
 
 -- dosage(drug_name, age_group, sug_amount)
 INSERT INTO dosage VALUES
@@ -102,27 +119,33 @@ INSERT INTO dosage VALUES
 ('obizur', '5-10', 2),
 ('motrin', '10-15', 5),
 ('aleve', '25-30', 1),
-('metformin', '55-60', 1);
+('metformin', '55-60', 1),
+('aleve', '30-35', 1); -- test for prescribing Greg with too large of a dose
 
 -- medications(hcno, chart_id, staff_id, mdate, start_med, end_med, amount, drug_name)
 -- only open tables, mdate is the same as start_med, end_date is 10 days later
 INSERT INTO medications VALUES
 ('64328', '00002', '12345', "2000-01-16 03:21:40.066", "2000-01-16 03:21:40.066", "2000-01-26 03:21:40.066", 2, 'jardiance'), --Edmonton
-('11137', '00010', '12345', "2000-05-16 03:21:40.066", "2000-05-16 03:21:40.066", "2000-05-26 03:21:40.066", 2, 'aleve'), --Edmonton
-('11137', '00010', '12345', "2000-05-16 03:21:40.066", "2000-05-16 03:21:40.066", "2000-05-26 03:21:40.066", 12, 'abelcet'), --Vancouver
-('23769', '00004', '12345', "2000-02-16 03:21:40.066", "2000-02-16 03:21:40.066", "2000-02-26 03:21:40.066", 6, 'motrin'), --Toronto
-('23769', '00004', '12345', "2000-02-16 03:21:40.066", "2000-02-16 03:21:40.066", "2000-02-26 03:21:40.066", 5, 'aleve'), --Toronto
--- ('54328', "2000-07-13 01:44:19.357", 150, 10, 'abelcet'), --Vancouver
+--metformin prescribtion for administrative query 2 test
+('11137', '00010', '12345', "2000-05-16 03:21:40.066", "2000-05-16 03:21:40.066", "2000-05-26 03:21:40.066", 2, 'metformin'), --Edmonton
+('11137', '00010', '12345', "2000-05-17 03:21:40.066", "2000-05-17 03:21:40.066", "2000-05-27 03:21:40.066", 12, 'metformin'), --Vancouver
+--drugZ prescribtion for administrative query 2 test
+('23769', '00004', '12345', "2000-02-16 03:21:40.066", "2000-02-16 03:21:40.066", "2000-02-26 03:21:40.066", 6, 'drugZ'), --Toronto
+('23769', '00004', '12345', "2000-02-17 03:21:40.066", "2000-02-17 03:21:40.066", "2000-02-27 03:21:40.066", 5, 'drugZ'), --Toronto
+('35214', '00012', '12345', "2000-07-16 03:21:40.066", "2000-07-16 03:21:40.066", "2000-07-26 03:21:40.066", 14, 'abelcet'), --Vancouver
 ('35214', '00012', '12345', "2000-07-16 03:21:40.066", "2000-07-16 03:21:40.066", "2000-07-26 03:21:40.066", 18, 'abelcet'), --Vancouver
 ('91623', '00006', '12345', "2000-03-16 03:21:40.066", "2000-03-16 03:21:40.066", "2000-03-26 03:21:40.066", 240, 'niacin'), --Calgary
 ('75019', '00008', '12345', "2000-04-16 03:21:40.066", "2000-04-16 03:21:40.066", "2000-04-26 03:21:40.066", 6, 'obizur'), --Edmonton
 ('75019', '00008', '12345', "2000-04-16 03:21:40.066", "2000-04-16 03:21:40.066", "2000-04-26 03:21:40.066", 1, 'aleve'), --Edmonton
-('35214', '00012', '12345', "2000-07-16 03:21:40.066", "2000-07-16 03:21:40.066", "2000-07-26 03:21:40.066", 206, 'niacin'); --Calgary
--- ('00372', "2012-04-20 11:12:33.082", 220, 21, 'niacin'); --Toronto
+('35214', '00012', '12345', "2000-07-16 03:21:40.066", "2000-07-16 03:21:40.066", "2000-07-26 03:21:40.066", 207, 'niacin'), --Calgary
+('35214', '00012', '12345', "2000-07-16 03:21:40.066", "2000-07-16 03:21:40.066", "2000-07-26 03:21:40.066", 206, 'niacin'), --Calgary
+-- test for prescribing Greg with too large of a dose of aleve
+('00372', '00013', '12345', "2000-08-16 03:21:40.066", "2000-08-16 03:21:40.066", "2000-07-26 03:21:40.066", 2, 'aleve');
 
 -- reportedallergies(hcno, drug_name)
 INSERT INTO reportedallergies VALUES
 ('54328', 'jardiance'),
+('64328', 'aleve'), -- allergy test for John
 ('88163', 'motrin'),
 ('11137', 'obizur'),
 ('75019', 'jardiance'),
@@ -134,4 +157,5 @@ INSERT INTO reportedallergies VALUES
 -- inferredallergies(alg, canbe_alg)
 INSERT INTO inferredallergies VALUES
 ('obizur', 'prozac'),
-('metformin', 'motrin');
+('metformin', 'motrin'),
+('aleve', 'prozac'); -- inferred allergy test for John
