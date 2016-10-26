@@ -1,7 +1,14 @@
 from CareStaffController import CareStaff
 
 
-class Doctor(CareStaff):
+class Docter(CareStaff):
+    
+    # options = []
+
+    # def __init__(self,staffId){
+    #     self.staffId = staffId
+    # }
+
 
     staff_id = 0
 
@@ -9,24 +16,50 @@ class Doctor(CareStaff):
 
         '''Check if the diagnosis is already located in that patient's chart'''
 
-        c.execute('''
+        Login.getCursor().execute('''
             INSERT INTO diagnoses VALUES(?, ?, ?, date('now') ,?);
             ''', patientHcno, patientChartID, staffId, diagnosis)
-        commit()
+        Login.commit()
 
     def addMedication(c , patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName):
-        c.execute('''
+        Login.getCursor().execute('''
             INSERT INTO medications VALUES(?, ?, ?, date('now'), ?, ?, ?, ?);
             ''', patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName)
-        commit()
+        Login.commit()
 
     def commit():
-        conn.commit()
+        Login.commit()
 
-    def main(staff_id):
+    @staticmethod
+    def showOptions():
+        print("View patient chart - 'C'")
+        print("Add diagnois to chart - 'D'")
+        print("Add sympotm to chart - 'S'")
+        print("Add medication to chart - 'M'")
+        s = raw_input("Option? :'")
+        return s
 
+    @staticmethod
+    def main():
+        # showOptions`
+        while(1):
+            selectedOption = Docter.showOptions()
+            if(selectedOption == 'E'):
+                break #return to login controller
+            elif(selectedOption == 'C'):
+                s = raw_input("hcno :'")
+                Docter.getPatientCharts(s)
+            elif(selectedOption == 'D'):
+                print
+            elif(selectedOption == 'S'):
+                print()
+            elif(selectedOption == 'M'):
+                print()
+            else:
+                print("Invalid input try again.")
 
-
+<<<<<<< HEAD:pkg/Controllers/DocterController.py
+=======
         selection = DoctorViews.menu()
     options = {
     # "getPatientCharts" : ("Get a list of all of a specified patient's charts. Then select a chart to view.", getPatientCharts),
@@ -34,5 +67,5 @@ class Doctor(CareStaff):
     "addDiagnosis" : ("Add a diagnoses to the chart of a specified patient.", addDiagnosis),
     "addMedication" : ("Perscribe a medication to a specified patient", addMedication)
     }
+>>>>>>> 570d9d60ec73a79cb27754951ab6dc629e113f39:pkg/Controllers/DoctorController.py
 
-    #______________________________________________________Views_________

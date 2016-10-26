@@ -1,3 +1,7 @@
+from getpass import getpass
+import sqlite3
+from DocterController import Docter
+
 import hashlib
 from getpass import getpass
 from DoctorController import Doctor
@@ -5,14 +9,21 @@ from DoctorController import Doctor
 class Login:
     #initialization of a login class should start the program
     #user logs in and is directed to views with their functionality
+    conn = None
+    cursor = None
+    dbLocation = "../../data.db"
 
     def loginNurse(staff_id):
         # Create a Nurse
+        print "Hello Nurse"
         Nurse(staff_id)
 
-    def loginDoctor(staff_id):
-        # Create a Doctor
-        Doctor(staff_id)
+    def loginDocter(staff_id):
+        # Create a Docter
+        print "Hello doctor"
+        Docter.main()
+        
+
 
     def loginAdmin(staff_id):
         # Create an admin
@@ -27,9 +38,9 @@ class Login:
 
     def loginLogic(self, c):
         #Control the logical flow of the login operations
-
         userName, passwordHash = Login.getlogin()
         staff_id = self.validateLogin(userName, passwordHash, c)
+
         if staff_id is not None :
             print "logged in"
             role = self.getRole(c, staff_id)
@@ -71,3 +82,21 @@ class Login:
         password = raw_input("Password: ")
         passwordHash = hashlib.sha224(password).hexdigest()
         return(username, passwordHash)
+
+    @staticmethod
+    def getConn():
+        if Login.conn == None:
+            Login.conn = conn = sqlite3.connect(Login.dbLocation)
+        return Login.conn
+
+    @staticmethod
+    def getCursor():
+        if Login.cursor == None:
+            Login.cursor = Login.getConn.cursor()
+        return Login.cursor
+    
+    @staticmethod
+    def commit():
+        Login.getConn().commit()
+
+            
