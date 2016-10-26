@@ -16,9 +16,6 @@ class CareStaff:
         print c.fetchAll()
 
     def getChartInfo(c, patientHcno, patientChartID):
-
-        '''Check if the symptom is already located in that patient's chart'''
-
         c.execute('''
             SELECT 'S' AS TYPE, obs_date as DATE, symptom AS INFO
             FROM symptoms
@@ -37,6 +34,9 @@ class CareStaff:
         print c.fetchAll()
 
     def addSymptom(c , patientHcno, patientChartID, staffId, symptom):
+        
+        '''Check if the symptom is already located in that patient's chart'''
+
         c.execute('''
             INSERT INTO symptoms VALUES(?, ?, ?, date('now') ,?);
             ''', patientHcno, patientChartID, staffId, symptom)
