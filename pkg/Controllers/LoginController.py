@@ -1,5 +1,6 @@
 import hashlib
 from getpass import getpass
+from DoctorController import Doctod
 
 class Login:
     #initialization of a login class should start the program
@@ -9,9 +10,9 @@ class Login:
         # Create a Nurse
         Nurse(staff_id)
 
-    def loginDocter(staff_id):
-        # Create a Docter
-        Docter(staff_id)
+    def loginDoctor(staff_id):
+        # Create a Doctor
+        Doctor(staff_id)
 
     def loginAdmin(staff_id):
         # Create an admin
@@ -19,7 +20,7 @@ class Login:
 
     loginAs = {
     "N":loginNurse,
-    "D":loginDocter,
+    "D":loginDoctor,
     "A":loginAdmin
     }
 

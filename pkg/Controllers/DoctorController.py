@@ -1,7 +1,7 @@
 from CareStaffController import CareStaff
 
 
-class Docter(CareStaff):
+class Doctor(CareStaff):
 
     staff_id = 0
 
@@ -27,7 +27,7 @@ class Docter(CareStaff):
 
 
 
-        selection = DocterViews.menu()
+        selection = DoctorViews.menu()
     options = {
     # "getPatientCharts" : ("Get a list of all of a specified patient's charts. Then select a chart to view.", getPatientCharts),
     # "addSymptom" : ("Add a symptom to the chart of a specified patient.", addSymptom),
