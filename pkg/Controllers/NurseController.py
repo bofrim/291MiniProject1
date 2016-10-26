@@ -1,34 +1,36 @@
 from CareStaffController import CareStaff
+from LoginContoller import Login
 
 class Nurse(CareStaff):
 
     def createChart(c, patientHcno):
         newChartId = getNewChartID(c)
-        c.execute(
+        Login.getCursor().execute(
             '''
             INSERT INTO charts VALUES(?,?,date('now'), ?);
             ''', patientChartId, patientHcno, (None,))
-        commit()
+        Login.commit()
+
     def closeChart(c, patientHcno):
         patientsOpenChart = getMostRecentChart(c, patientHcno)
-        c.execute(
+        Login.getCursor().execute(
             '''
             UPDATE charts SET edate = date('now') WHERE charId = ?;
             ''', patientChartId)
-        commit()
+        Login.commit()
 
     def getNewChartId(c):
-        c.execute(
+        Login.getCursor().execute(
             '''
             SECLECT COUNT(*) FROM charts;
             '''
         )
-        row = c.fetchOne()
+        row = Login.getCursor().fetchOne()
         newId = row[0] + 1
         return format(newId, '05') #will left pad w/ zeros up to 5 digets
 
     def getMostRecentChart(c, patientHcno):
-        c.execute(
+        Login.getCursor().execute(
             '''
             SELECT chart_id
             FROM charts
@@ -36,12 +38,12 @@ class Nurse(CareStaff):
             ORDER BY adate
             '''
         )
-        row = c.fetchOne()
+        row = Login.getCursor().fetchOne()
         return row[0]
 
     # not sure if this works yet
     def hasChartOpen(c, patientChartId):
-        c.execute(
+        Login.getCursor().execute(
             '''
             SELECT edate
             FROM charts
@@ -49,11 +51,9 @@ class Nurse(CareStaff):
             ORDER BY adate
             ''',patientChartId
         )
-        row = c.fetchOne()
+        row = Login.getCursor().fetchOne()
         return row[1] != None # false if None
 
-    def commit():
-        conn.commit()
 
     options = {
     # "getPatientCharts" : ("Get a list of all of a specified patient's charts. Then select a chart to view.", getPatientCharts),
@@ -63,7 +63,7 @@ class Nurse(CareStaff):
     }
 
 #______________________________________________________Views_________
-
+    @staticmethod
     def override():
         return raw_input("There is already an open chart for this patient."
                         "Would you like to close it and open a new chart? (y/n): ")

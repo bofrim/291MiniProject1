@@ -1,9 +1,15 @@
 from getpass import getpass
+import sqlite3
+from DocterController import Docter
+
 import hashlib
 
 class Login:
     #initialization of a login class should start the program
     #user logs in and is directed to views with their functionality
+    conn = None
+    cursor = None
+    dbLocation = "../../data.db"
 
     def loginNurse(staff_id):
         # Create a Nurse
@@ -13,6 +19,8 @@ class Login:
     def loginDocter(staff_id):
         # Create a Docter
         print "Hello doctor"
+        Docter.main()
+
 
     def loginAdmin(staff_id):
         # Create an admin
@@ -27,9 +35,9 @@ class Login:
 
     def loginLogic(self, c):
         #Control the logical flow of the login operations
-
-        userName, passwordHash = loginView.getlogin()
+        userName, passwordHash = Login.getlogin()
         staff_id = self.validateLogin(userName, passwordHash, c)
+
         if staff_id is not None :
             print "logged in"
             role = self.getRole(c, staff_id)
@@ -60,17 +68,35 @@ class Login:
 
 
 #______________________________________________________Views_________
-
+    @staticmethod
     def SignInORSignUp():
         raw_input("Would you like to 'signIn' or 'signUp'?\n")
-
+    @staticmethod
     def getlogin():
         login = raw_input("User name: ")
         passwordHash = hashlib.sha224(getpass("Password: ")).hexdigest()
         return(login, passwordHash)
-
-    def SignUp():
+    @staticmethod
+    def signUp():
         username = raw_input("Username: ")
         password = raw_input("Password: ")
         passwordHash = hashlib.sha224(password).hexdigest()
         return(username, passwordHash)
+
+    @staticmethod
+    def getConn():
+        if Login.conn == None:
+            Login.conn = conn = sqlite3.connect(Login.dbLocation)
+        return Login.conn
+
+    @staticmethod
+    def getCursor():
+        if Login.cursor == None:
+            Login.cursor = Login.getConn.cursor()
+        return Login.cursor
+    
+    @staticmethod
+    def commit():
+        Login.getConn().commit()
+
+            
