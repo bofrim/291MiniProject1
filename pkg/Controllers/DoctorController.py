@@ -2,7 +2,7 @@ from CareStaffController import CareStaff
 
 
 class Docter(CareStaff):
-    
+
     # options = []
 
     # def __init__(self,staffId){
@@ -57,15 +57,3 @@ class Docter(CareStaff):
                 print()
             else:
                 print("Invalid input try again.")
-
-<<<<<<< HEAD:pkg/Controllers/DocterController.py
-=======
-        selection = DoctorViews.menu()
-    options = {
-    # "getPatientCharts" : ("Get a list of all of a specified patient's charts. Then select a chart to view.", getPatientCharts),
-    # "addSymptom" : ("Add a symptom to the chart of a specified patient.", addSymptom),
-    "addDiagnosis" : ("Add a diagnoses to the chart of a specified patient.", addDiagnosis),
-    "addMedication" : ("Perscribe a medication to a specified patient", addMedication)
-    }
->>>>>>> 570d9d60ec73a79cb27754951ab6dc629e113f39:pkg/Controllers/DoctorController.py
-
