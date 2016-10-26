@@ -1,6 +1,6 @@
 import hashlib
 from getpass import getpass
-from DoctorController import Doctod
+from DoctorController import Doctor
 
 class Login:
     #initialization of a login class should start the program
