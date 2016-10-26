@@ -16,6 +16,9 @@ class CareStaff:
         print c.fetchAll()
 
     def getChartInfo(c, patientHcno, patientChartID):
+
+        '''Check if the symptom is already located in that patient's chart'''
+
         c.execute('''
             SELECT 'S' AS TYPE, obs_date as DATE, symptom AS INFO
             FROM symptoms

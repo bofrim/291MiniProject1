@@ -10,6 +10,9 @@ class Docter(CareStaff):
     }
 
     def addDiagnosis(c , patientHcno, patientChartID, staffId, diagnosis):
+        
+        '''Check if the diagnosis is already located in that patient's chart'''
+
         c.execute('''
             INSERT INTO diagnoses VALUES(?, ?, ?, date('now') ,?);
             ''', patientHcno, patientChartID, staffId, diagnosis)
