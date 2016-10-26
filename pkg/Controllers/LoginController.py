@@ -7,6 +7,7 @@ class Login:
     def loginNurse(staff_id):
         # Create a Nurse
         print "Hello Nurse"
+        
 
     def loginDocter(staff_id):
         # Create a Docter
