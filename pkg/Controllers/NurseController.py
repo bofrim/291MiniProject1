@@ -1,13 +1,7 @@
 from ..Views.NurseViews import *
+from CareStaffController import CareStaff
 
-class Nurse(careStaff):
-
-    options = {
-    "getPatientCharts" : ("Get a list of all of a specified patient's charts. Then select a chart to view.", getPatientCharts),
-    "addSymptom" : ("Add a symptom to the chart of a specified patient.", addSymptom),
-    "createChart" : ("Create a new chart for a specified patient.", createChart),
-    "closeChart" : ("Close the specified patient's open chart.", closeChart)
-    }
+class Nurse(CareStaff):
 
     def createChart(c, patientHcno):
         newChartId = getNewChartID(c)
@@ -61,3 +55,10 @@ class Nurse(careStaff):
 
     def commit():
         conn.commit()
+
+    options = {
+    # "getPatientCharts" : ("Get a list of all of a specified patient's charts. Then select a chart to view.", getPatientCharts),
+    # "addSymptom" : ("Add a symptom to the chart of a specified patient.", addSymptom),
+    "createChart" : ("Create a new chart for a specified patient.", createChart),
+    "closeChart" : ("Close the specified patient's open chart.", closeChart)
+    }
