@@ -4,6 +4,8 @@ from CareStaffController import CareStaff
 
 class Docter(CareStaff):
 
+    staff_id = 0
+
     def addDiagnosis(c , patientHcno, patientChartID, staffId, diagnosis):
 
         '''Check if the diagnosis is already located in that patient's chart'''
@@ -22,6 +24,11 @@ class Docter(CareStaff):
     def commit():
         conn.commit()
 
+    def main(staff_id):
+
+
+
+        selection = DocterViews.menu()
     options = {
     # "getPatientCharts" : ("Get a list of all of a specified patient's charts. Then select a chart to view.", getPatientCharts),
     # "addSymptom" : ("Add a symptom to the chart of a specified patient.", addSymptom),
