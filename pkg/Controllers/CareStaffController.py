@@ -1,5 +1,3 @@
-from ..Views.CareStaffViews import *
-
 class CareStaff:
     # Variables for careStaff Employees
     staff_id = None
@@ -43,17 +41,18 @@ class CareStaff:
         commit()
 
     #______________________________________________________Views_________
+    @staticmethod
     def action():
         return raw_input("What would you like to do?\n")
-
+    @staticmethod
     def getHcno():
         return raw_input("Enter the Patient's Health Care Number: ")
-
+    @staticmethod
     def getSymptom():
         return raw_input("Enter the observed symptom: ")
-
+    @staticmethod
     def getDiagnosis():
         return raw_input("Enter the diagnosis: ")
-
+    @staticmethod
     def getMedication():
         return raw_input("Enter the medication: ")

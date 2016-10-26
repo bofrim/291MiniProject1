@@ -1,4 +1,3 @@
-from ..Views.LoginViews import *
 import hashlib
 
 class Login:
@@ -27,7 +26,7 @@ class Login:
     def loginLogic(self, c):
         #Control the logical flow of the login operations
 
-        userName, passwordHash = loginView.getlogin()
+        userName, passwordHash = Login.getlogin()
         staff_id = self.validateLogin(userName, passwordHash, c)
         if staff_id is not None :
             print "logged in"
@@ -59,16 +58,16 @@ class Login:
 
 
 #______________________________________________________Views_________
-
+    @staticmethod
     def SignInORSignUp():
         raw_input("Would you like to 'signIn' or 'signUp'?\n")
-
+    @staticmethod
     def getlogin():
         login = raw_input("User name: ")
         passwordHash = hashlib.sha224(getpass("Password: ")).hexdigest()
         return(login, passwordHash)
-
-    def SignUp():
+    @staticmethod
+    def signUp():
         username = raw_input("Username: ")
         password = raw_input("Password: ")
         passwordHash = hashlib.sha224(password).hexdigest()

@@ -1,4 +1,3 @@
-from ..Views.DocterViews import *
 from CareStaffController import CareStaff
 
 
@@ -35,3 +34,5 @@ class Docter(CareStaff):
     "addDiagnosis" : ("Add a diagnoses to the chart of a specified patient.", addDiagnosis),
     "addMedication" : ("Perscribe a medication to a specified patient", addMedication)
     }
+
+    #______________________________________________________Views_________
