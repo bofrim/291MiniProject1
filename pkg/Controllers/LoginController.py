@@ -3,6 +3,8 @@ import sqlite3
 from DocterController import Docter
 
 import hashlib
+from getpass import getpass
+from DoctorController import Doctod
 
 class Login:
     #initialization of a login class should start the program
@@ -14,12 +16,13 @@ class Login:
     def loginNurse(staff_id):
         # Create a Nurse
         print "Hello Nurse"
-        
+        Nurse(staff_id)
 
     def loginDocter(staff_id):
         # Create a Docter
         print "Hello doctor"
         Docter.main()
+        
 
 
     def loginAdmin(staff_id):
@@ -28,7 +31,7 @@ class Login:
 
     loginAs = {
     "N":loginNurse,
-    "D":loginDocter,
+    "D":loginDoctor,
     "A":loginAdmin
     }
 
@@ -68,9 +71,6 @@ class Login:
 
 
 #______________________________________________________Views_________
-    @staticmethod
-    def SignInORSignUp():
-        raw_input("Would you like to 'signIn' or 'signUp'?\n")
     @staticmethod
     def getlogin():
         login = raw_input("User name: ")
