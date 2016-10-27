@@ -165,11 +165,4 @@ class CareStaff:
     @staticmethod
     def getDiagnosis():
         return raw_input("Enter the diagnosis: ")
-    @staticmethod
-    def getMedication():
-        medName = raw_input("Enter medication name: ")
-        medAmount = raw_input("Enter dosage amount: ")
-        medStart = raw_input("Enter medication start date: ")
-        medEnd = raw_input("Enter medication end date: ")
-        medDict = { "name" : medName, "amount" : medAmount, "start" : medStart, "end" : medEnd}
-        return medDict
+

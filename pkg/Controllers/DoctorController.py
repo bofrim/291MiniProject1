@@ -1,5 +1,6 @@
 from CareStaffController import CareStaff
 from SharedResources import Resources
+from dateutil.parser import parse
 
 class Doctor(CareStaff):
     # options = []
@@ -38,12 +39,29 @@ class Doctor(CareStaff):
             return
         mostRecentChartId = CareStaff.getMostRecentChart(hcno)
 
-        medInfo = CareStaff.getMedication()
+        medInfo = Doctor.getMedication()
         # check if drug exists
+        if(Doctor.drugExits(medInfo['name']) == False):
+            print
+            print "Drug '" + medInfo['name'] + " does not exist"
+            return
 
         #check is amount is numeric
+        if(medInfo['amount'].isdigit() == False):
+            print
+            print "Non numeric drug amount '" + medInfo['amount'] + "' entered"
+            return
 
         #check is start and end dates are dates
+        if(Doctor.is_date(medInfo['start']) == False):
+            print
+            print "Incorrect date format used for start date '" + medInfo['start'] + "'"
+            return
+
+        if(Doctor.is_date(medInfo['end']) == False):
+            print
+            print "Incorrect date format used for start date '" + medInfo['end'] + "'"
+            return
 
         # check dosage amount
         sugAmount = Doctor.getSuggestedAmount(hcno,medInfo["name"])
@@ -129,7 +147,7 @@ class Doctor(CareStaff):
     def addMedication(patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName):
         Resources.getCursor().execute('''
             INSERT INTO medications VALUES(?, ?, ?, STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'), ?, ?, ?, ?);
-            ''', (patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName))
+            ''', (patientHcno, patientChartID, staffId, startDate, endDate, int(drugAmount), drugName))
         Resources.commit()
     
     @staticmethod
@@ -169,6 +187,26 @@ class Doctor(CareStaff):
         return row != None
 
     @staticmethod
+    def is_date(string):
+        try: 
+            parse(string)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod 
+    def drugExits(drugName):
+        Resources.getCursor().execute(
+            '''
+            SELECT * 
+            FROM drugs 
+            WHERE drug_name = ?;
+            ''',(drugName,))
+        row = Resources.getCursor().fetchone()
+        return row != None
+
+
+    @staticmethod
     def showOptions():
         print
         print("**********************************************************")
@@ -201,3 +239,14 @@ class Doctor(CareStaff):
                 Doctor.addMedicationStory()
             else:
                 print("Invalid input try again.")
+
+    @staticmethod
+    def getMedication():
+        medName = raw_input("Enter medication name: ")
+        medAmount = raw_input("Enter dosage amount: ")
+        medStart = raw_input("Enter medication start date: ")
+        medEnd = raw_input("Enter medication end date: ")
+        medDict = { "name" : medName, "amount" : medAmount, "start" : medStart, "end" : medEnd}
+        return medDict
+
+
