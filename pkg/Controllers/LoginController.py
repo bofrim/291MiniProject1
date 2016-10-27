@@ -3,8 +3,6 @@ import sqlite3
 from DoctorController import Doctor
 from AdministrationController import AdminStaff
 from NurseController import Nurse
-
-
 import hashlib
 
 class Login:
