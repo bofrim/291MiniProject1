@@ -1,11 +1,9 @@
 from getpass import getpass
 import sqlite3
 from DoctorController import Doctor
-<<<<<<< HEAD
 from AdministrationController import AdminStaff
-=======
 from NurseController import Nurse
->>>>>>> origin/master
+
 
 import hashlib
 

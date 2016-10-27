@@ -4,12 +4,13 @@ from SharedResources import Resources
 
 class Nurse(CareStaff):
 
-    @staticmethod
-    def main(self):
-        # self.staffID = staffID
-        selectedOption = Nurse.showOptions()
-        while selectedOption != "exit":
 
+    @staticmethod
+    def main(staff_id):
+        CareStaff.staff_id = staff_id
+        selectedOption = ""
+        while selectedOption != "exit":
+            selectedOption = Nurse.showOptions()
             if selectedOption == "create":
                 patientHcno = raw_input("Enter the Patient's Health Care Number: ")
                 chartID = getChartID(patientHcno)
@@ -36,10 +37,12 @@ class Nurse(CareStaff):
                 Nurse.addSymptomStory()
             elif selectedOption == "C":
                 Doctor.patientChartStory()
-            else:
+            elif selectedOption is not "exit":
                 print("Invalid input try again.")
 
+        print
         print('Logging out... Goodbye!')
+        print
 
     @staticmethod
     def showOptions():

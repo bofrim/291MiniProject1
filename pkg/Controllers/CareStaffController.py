@@ -78,20 +78,20 @@ class CareStaff:
             ''', (patientHcno, patientChartID, staffId, symptom))
         Resources.commit()
 
-    @staticmethod      
+    @staticmethod
     def hasChartOpen(patientChartId):
         Resources.getCursor().execute(
             '''
             SELECT edate
             FROM charts
             WHERE hcno = ?
-            ORDER BY adate
+            ORDER BY edate;
             ''',(patientChartId,))
         row = Resources.getCursor().fetchone()
-        if(row == None): return false
+        if(row == None): return False
         return row[0] == None # true if end Date is None
 
-    @staticmethod  
+    @staticmethod
     def createChart( patientHcno):
         newChartId = CareStaff.getNewChartId()
         Resources.getCursor().execute(
@@ -100,7 +100,7 @@ class CareStaff:
             ''', (newChartId, patientHcno, None))
         Resources.commit()
 
-    @staticmethod  
+    @staticmethod
     def getMostRecentChart( patientHcno):
         Resources.getCursor().execute(
             '''
@@ -111,7 +111,7 @@ class CareStaff:
             ''',(patientHcno,))
         row = Resources.getCursor().fetchone()
         return row[0]
-    
+
     @staticmethod
     def patientExists(patientHcno):
         Resources.getCursor().execute(
@@ -143,7 +143,7 @@ class CareStaff:
         return raw_input("Enter the Patient's Health Care Number: ")
     @staticmethod
     def getChartNo():
-        return raw_input("Enter the Patient's Chart Number: ")        
+        return raw_input("Enter the Patient's Chart Number: ")
     @staticmethod
     def getSymptom():
         return raw_input("Enter the observed symptom: ")
