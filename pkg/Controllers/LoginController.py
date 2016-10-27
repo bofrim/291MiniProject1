@@ -1,6 +1,7 @@
 from getpass import getpass
 import sqlite3
 from DoctorController import Doctor
+from AdministrationController import AdminStaff
 
 import hashlib
 
@@ -18,12 +19,13 @@ class Login:
         # Create a Docter
         print "Hello doctor"
         Doctor.main()
-        
+
 
 
     def loginAdmin(staff_id):
         # Create an admin
-        print "Hello Admin"
+        print "Hello AdminStaff"
+        AdminStaff.main()
 
     loginAs = {
     "N":loginNurse,
@@ -37,7 +39,7 @@ class Login:
         userName, passwordHash = Login.getlogin()
         staff_id = self.validateLogin(userName, passwordHash, c)
 
-        
+
         if staff_id is not None :
             print "logged in"
             role = self.getRole(c, staff_id)
@@ -91,9 +93,7 @@ class Login:
     #     if Login.cursor == None:
     #         Login.cursor = Login.getConn.cursor()
     #     return Login.cursor
-    
+
     # @staticmethod
     # def commit():
     #     Login.getConn().commit()
-
-            
