@@ -117,6 +117,7 @@ INSERT INTO dosage VALUES
 ('jardiance', '10-15', 10),
 ('niacin', '20-25', 4),
 ('prozac', '55-60', 1),
+('prozac', '30-35', 1), -- test for greg infered allergy
 ('obizur', '5-10', 2),
 ('motrin', '10-15', 5),
 ('aleve', '25-30', 1),
@@ -152,7 +153,8 @@ INSERT INTO reportedallergies VALUES
 ('23769', 'metformin'),
 ('23769', 'motrin'),
 ('00372', 'motrin'),
-('00372', 'metformin');
+('00372', 'metformin'),
+('00372', 'aleve'); -- Testing for Greg's reported allergies
 
 -- inferredallergies(alg, canbe_alg)
 INSERT INTO inferredallergies VALUES

@@ -49,7 +49,7 @@ class Doctor(CareStaff):
         sugAmount = Doctor.getSuggestedAmount(hcno,medInfo["name"])
         print(sugAmount)
         print(medInfo['amount'])
-        while(medInfo['amount'] > sugAmount):
+        while(int(medInfo['amount']) > int(sugAmount)):
             print "WARNING: Perscribed amount '"+ str(medInfo['amount']) +"' is greater than the suggested amount '" + str(sugAmount)+ "'"
             enterNewAmount = raw_input("Would you like to enter a new anount? [Y/N]")
             if(enterNewAmount == "Y" or enterNewAmount == "y"):
@@ -67,7 +67,8 @@ class Doctor(CareStaff):
             print "WARNING: Patient is allergic to '" + allergy [0] + "' so they might be allergic to '" + medInfo['name'] + "'"
         if(Doctor.patientIsAllergic(hcno, medInfo['name']) or len(inferedAllergies)):
             stillContinue = raw_input("Would you still like to perscribe the medication? [Y/N]")
-            if(openenterNewAmountNew != "Y" and enterNewAmount != "y"):
+            if(stillContinue != "Y" and stillContinue != "y"):
+                print
                 print "Perscription canceled"
                 print
         Doctor.addMedication(hcno, mostRecentChartId, CareStaff.staff_id, medInfo["start"] , medInfo["end"], medInfo["amount"] , medInfo["name"])
