@@ -27,8 +27,12 @@ class CareStaff:
             else:
                 return
         mostRecentChartId = CareStaff.getMostRecentChart(hcno)
-        symptonName = CareStaff.getSymptom()
-        CareStaff.addSymptom( hcno, mostRecentChartId, CareStaff.staff_id, symptonName)
+        symptomName = CareStaff.getSymptom()
+        if(CareStaff.symptomExistsForChart(mostRecentChartId,symptomName) == True):
+            print
+            print "Latest Chart already has symptom '" + symptomName + "'" 
+            return
+        CareStaff.addSymptom( hcno, mostRecentChartId, CareStaff.staff_id, symptomName)
 
 
 
@@ -133,6 +137,18 @@ class CareStaff:
         row = Resources.getCursor().fetchone()
         newId = row[0] + 1
         return format(newId, '05') #will left pad w/ zeros up to 5 digets
+
+    @staticmethod
+    def symptomExistsForChart(chartNo, symptom):
+        Resources.getCursor().execute(
+            '''
+            SELECT * FROM
+            symptoms 
+            WHERE chart_id = ?
+            AND symptom = ? COLLATE NOCASE;
+            ''',(chartNo,symptom))
+        row = Resources.getCursor().fetchone()
+        return row != None
 
     #______________________________________________________Views_________
     @staticmethod
