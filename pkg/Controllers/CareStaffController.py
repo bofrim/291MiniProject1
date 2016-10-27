@@ -17,7 +17,9 @@ class CareStaff:
     def addSymptomStory():
         print "from inside careStaff :" + CareStaff.staff_id
         hcno = CareStaff.getHcno()
-        # TO DO CHECK IF patient exists
+        if(CareStaff.patientExists(hcno) == False):
+            print("Patient does not exist. Return to menu.")
+            return
         if(CareStaff.hasChartOpen(hcno) == False):
             openNew = raw_input("No chart open for patient. Open new one? [Y/N]")
             if(openNew == "Y" or openNew == "y"):
@@ -86,15 +88,16 @@ class CareStaff:
             ORDER BY adate
             ''',(patientChartId,))
         row = Resources.getCursor().fetchone()
-        return row[0] != None # false if None
+        if(row == None): return false
+        return row[0] == None # true if end Date is None
 
     @staticmethod  
     def createChart( patientHcno):
-        newChartId = getNewChartID(c)
+        newChartId = CareStaff.getNewChartId()
         Resources.getCursor().execute(
             '''
             INSERT INTO charts VALUES(?,?,STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'), ?);
-            ''', (patientChartId, patientHcno, None))
+            ''', (newChartId, patientHcno, None))
         Resources.commit()
 
     @staticmethod  
@@ -108,6 +111,28 @@ class CareStaff:
             ''',(patientHcno,))
         row = Resources.getCursor().fetchone()
         return row[0]
+    
+    @staticmethod
+    def patientExists(patientHcno):
+        Resources.getCursor().execute(
+            '''
+            SELECT hcno
+            FROM patients
+            WHERE hcno = ?
+            ''',(patientHcno,))
+        row = Resources.getCursor().fetchone()
+        return row != None
+
+    @staticmethod
+    def getNewChartId():
+        Resources.getCursor().execute(
+            '''
+            SELECT COUNT(*) FROM charts;
+            '''
+        )
+        row = Resources.getCursor().fetchone()
+        newId = row[0] + 1
+        return format(newId, '05') #will left pad w/ zeros up to 5 digets
 
     #______________________________________________________Views_________
     @staticmethod
