@@ -14,10 +14,6 @@ class AdminStaff:
 
     @staticmethod
     def drugTotalsByName(startDate, endDate):
-<<<<<<< HEAD
-        Resources.getCursor().execute('PRAGMA foreign_keys=ON;')
-=======
->>>>>>> origin/master
         Resources.getCursor().execute("""
             SELECT d.category, d.drug_name, SUM(m.amount)
             FROM drugs d, medications m
@@ -145,10 +141,6 @@ class AdminStaff:
         for cat in categories.keys():
             print cat + ": "+ str(categories[cat][0])
             for drug in categories[cat][1]:
-<<<<<<< HEAD
-                print " -" + str(drug[0]) + ": " + str(drug[1])
-            print
-=======
                 print " - " + str(drug[0]) + ": " + str(drug[1])
             print
     @staticmethod
@@ -177,7 +169,6 @@ class AdminStaff:
                 print " - " + diagnosis
             print
 
->>>>>>> origin/master
     @staticmethod
     def showOptions():
         print("____________________________________________________")
