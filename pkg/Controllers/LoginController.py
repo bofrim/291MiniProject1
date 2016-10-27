@@ -57,8 +57,6 @@ class Login:
     def validateLogin(self, login, passwordHash, c):
         c.execute('SELECT staff_id FROM staff WHERE login=:login AND password=:password', {"login": login, "password": passwordHash})
         staff_id = c.fetchone()
-        print staff_id
-        print type(staff_id[0])
         if staff_id is not None:
             return staff_id[0]
         else: return None

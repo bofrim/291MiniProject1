@@ -12,8 +12,6 @@ class AdminStaff:
         Resources.commit()
     @staticmethod
     def drugTotalsByName(startDate, endDate):
-        print(startDate)
-        print(endDate)
         Resources.getCursor().execute('PRAGMA foreign_keys=ON;')
         Resources.getCursor().execute("""
             SELECT d.category, d.drug_name, SUM(m.amount)
@@ -23,7 +21,6 @@ class AdminStaff:
             GROUP BY d.category, d.drug_name;
             """, (startDate, endDate))
         rows = Resources.getCursor().fetchall()
-        print(rows)
         return rows
 
 
@@ -32,8 +29,8 @@ class AdminStaff:
         Resources.getCursor().execute("""
             SELECT d.category, SUM(m.amount)
             FROM drugs d, medications m
-            WHERE d.drug_name = m.drug_gname
-            AND m.mdate > date('?') AND m.mdate < date('?')
+            WHERE d.drug_name = m.drug_name
+            AND m.mdate > date(?) AND m.mdate < date(?)
             GROUP BY d.category;
             """, (startDate, endDate))
         Resources.commit()
@@ -62,10 +59,10 @@ class AdminStaff:
     def formatReport_DrugTotals():
         startD = AdminStaff.getStartDate()
         endD = AdminStaff.getEndDate()
-        categoryTotals = AdminStaff.drugTotalsByName(startD, endD)
-        print categoryTotals
+        categoryTotals = AdminStaff.drugTotalsByCategory(startD, endD)
         categories = {} #dictionary: {<category name>:tuple(<category total>, [list of tuples(drug name, drug total)])}
         for row in categoryTotals:
+            print row
             categories[row[0]] = (row[1], [])
         nameTotals = AdminStaff.drugTotalsByName(startD, endD)
         for row in nameTotals:
@@ -87,11 +84,12 @@ class AdminStaff:
         return raw_input("Enter an end date for the report: ")
     @staticmethod
     def printTotalsReport(categories):
+        print
         for cat in categories.keys():
-            print cat + ": "+ categories[cat][0]
+            print cat + ": "+ str(categories[cat][0])
             for drug in categories[cat][1]:
-                print " --" + drug[0] + ": " + drug[1]
-
+                print " -" + str(drug[0]) + ": " + str(drug[1])
+            print
     @staticmethod
     def showOptions():
         print("Generate a report on drugs - 'D'")
