@@ -4,7 +4,9 @@ from SharedResources import Resources
 
 class Nurse(CareStaff):
 
-
+    '''
+    main loop logic for Nurse
+    '''
     @staticmethod
     def main(staff_id):
         CareStaff.staff_id = staff_id
@@ -12,14 +14,14 @@ class Nurse(CareStaff):
         while selectedOption != "exit":
             selectedOption = Nurse.showOptions()
             if selectedOption == "create":
-                patientHcno = raw_input("Enter the Patient's Health Care Number: ")
+                patientHcno = Nurse.getHcno()
                 if Nurse.patientInDB(patientHcno) == False:
                     print "Patient not in DB..."
+                    print
                     continue
                 openChartID = Nurse.getChartID(patientHcno)
                 if openChartID is not None:
-                    choice = raw_input("There is already a chart open for this patient."
-                                        "Would you like to create a new chart? (y/n): ")
+                    choice = Nurse.openNewChart()
                     if choice is ("n" or "N"):
                         continue
                     else:
@@ -27,15 +29,13 @@ class Nurse(CareStaff):
                         Nurse.createChart(patientHcno)
                 else:
                     Nurse.createChart(patientHcno)
-
             elif selectedOption == "close":
-                patientHcno = raw_input("Enter the Patient's Health Care Number: ")
+                patientHcno = Nurse.getHcno()
                 openChartID = Nurse.getChartID(patientHcno)
                 if openChartID is None:
                     print('There is no chart open for that patient')
                     continue
                 Nurse.closeChart(patientHcno, openChartID)
-
             elif selectedOption == "S":
                 Nurse.addSymptomStory()
             elif selectedOption == "C":
@@ -102,32 +102,6 @@ class Nurse(CareStaff):
         newId = row[0] + 1
         return format(newId, '05') #will left pad w/ zeros up to 5 digets
 
-    # @staticmethod
-    # def getMostRecentChart(patientHcno):
-    #     Resources.getCursor().execute(
-    #         '''
-    #         SELECT chart_id
-    #         FROM charts
-    #         WHERE hcno = patientChartID
-    #         ORDER BY adate desc;
-    #         '''
-    #     )
-    #     row = Resources.getCursor().fetchone()
-    #     return row[0]
-    #
-    # @staticmethod
-    # def hasChartOpen(patientChartId):
-    #     Resources.getCursor().execute(
-    #         '''
-    #         SELECT edate
-    #         FROM charts
-    #         WHERE hcno = ?
-    #         ORDER BY adate;
-    #         ''',patientChartId
-    #     )
-    #     row = Resources.getCursor().fetchone()
-    #     return row[1] != None # false if None
-
     '''
     returns open chart for patient with hcno (edate = NULL)
     returns False if no open chart
@@ -163,9 +137,6 @@ class Nurse(CareStaff):
 
 #______________________________________________________Views_________
     @staticmethod
-    def override():
-        return raw_input("There is already an open chart for this patient."
-                        "Would you like to close it and open a new chart? (y/n): ")
-    @staticmethod
-    def getSymptom():
-        return raw_input("Reported Symptom: ")
+    def openNewChart():
+        return raw_input("There is already a chart open for this patient."
+                         "Would you like to create a new chart? [Y/N]: ")

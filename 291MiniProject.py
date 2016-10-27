@@ -25,8 +25,8 @@ def executeScriptsFromFile(filename):
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
 # Initialize the tables
-executeScriptsFromFile("initDb.sql")
+# executeScriptsFromFile("initDb.sql")
 # Add the data
-executeScriptsFromFile("data.sql")
+# executeScriptsFromFile("data.sql")
 # Start the program
 session = LoginController.Login(c)
