@@ -32,7 +32,8 @@
 -- staff(staff_id, role, name, login, password)
 INSERT INTO staff VALUES
 ('12345', 'D', 'Ricardo', 'r.cardo', '23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7'), --abc
-('54321', 'N', 'Butch', 'b.utch', 'b6773126557f37fbc9b24e7b6adedc05d3eb3923fe3feeb369812d16'); --def
+('54321', 'N', 'Butch', 'b.utch', 'b6773126557f37fbc9b24e7b6adedc05d3eb3923fe3feeb369812d16'), --def
+('00001', 'A', 'John', 'John', '30e90f1cd0ceff8eb3dd6a540a605c0666f841d35de63c57e4dd2877'); --xyz
 
 
 -- patients(hcno, name, age_group, address, phone, emg_phone)
