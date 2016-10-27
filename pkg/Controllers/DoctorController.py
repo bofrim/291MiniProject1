@@ -1,8 +1,14 @@
 from CareStaffController import CareStaff
 from SharedResources import Resources
 
+<<<<<<< HEAD
 class Doctor(CareStaff):
     
+=======
+
+class Docter(CareStaff):
+
+>>>>>>> 8f6991f62ab928271b85140fef232fb195a45231
     # options = []
 
     # def __init__(self,staffId){
@@ -54,6 +60,4 @@ class Doctor(CareStaff):
                 print()
             else:
                 print("Invalid input try again.")
-
-
 

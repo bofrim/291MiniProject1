@@ -21,7 +21,7 @@
     - Administrative query 3, for diagnosis of depression
         Should list medications after 2000-07-15 03:21:40.066
           niacin, aleve
-            niacin is first because it is prescribed twice whereas aleve is
+            niacin is first because it is prescribed twice whereas abelcet is
             prescribed once after the diagnosis
 
     - Administrative query 4, for drug_name ______
@@ -137,6 +137,7 @@ INSERT INTO medications VALUES
 ('75019', '00008', '12345', "2000-04-16 03:21:40.066", "2000-04-16 03:21:40.066", "2000-04-26 03:21:40.066", 6, 'obizur'), --Edmonton
 ('75019', '00008', '12345', "2000-04-16 03:21:40.066", "2000-04-16 03:21:40.066", "2000-04-26 03:21:40.066", 1, 'aleve'), --Edmonton
 ('35214', '00012', '12345', "2000-07-16 03:21:40.066", "2000-07-16 03:21:40.066", "2000-07-26 03:21:40.066", 207, 'niacin'), --Calgary
+('35214', '00012', '12345', "2000-07-26 03:21:40.067", "2000-07-26 03:21:40.066", "2000-07-27 03:21:40.066", 207, 'niacin'), --Calgary
 -- test for prescribing Greg with too large of a dose of aleve
 ('00372', '00013', '12345', "2000-08-16 03:21:40.066", "2000-08-16 03:21:40.066", "2000-07-26 03:21:40.066", 2, 'aleve');
 
