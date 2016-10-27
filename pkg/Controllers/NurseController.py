@@ -11,7 +11,7 @@ class Nurse(CareStaff):
     def main(staff_id):
         CareStaff.staff_id = staff_id
         selectedOption = ""
-        while selectedOption != "exit":
+        while selectedOption != "E":
             selectedOption = Nurse.showOptions()
             if selectedOption == "create":
                 Nurse.createChartStory()
@@ -21,7 +21,7 @@ class Nurse(CareStaff):
                 Nurse.addSymptomStory()
             elif selectedOption == "C":
                 Nurse.patientChartStory()
-            elif selectedOption is not "exit":
+            elif selectedOption is not "E":
                 print("Invalid input.")
         print
         print('Logging out... Goodbye!')
@@ -69,6 +69,7 @@ class Nurse(CareStaff):
         print("Close a patient's chart - 'close'")
         print("Add sympotm to chart - 'S'")
         print("View patient charts - 'C'")
+        print("Exit - 'E'")
         s = raw_input("Option? :'")
         print("**********************************************************")
         print
