@@ -1,78 +1,77 @@
 from CareStaffController import CareStaff
 from LoginController import *
+from SharedResources import Resources
 
 class Nurse(CareStaff):
 
-    def __init__(self, staffID):
-        self.staffID = staffID
-        self.main()
-
+    @staticmethod
     def main(self):
         # self.staffID = staffID
-        c = Login.getCursor()
-        user = ""
-        print("Create a new chart for a patient - 'create'\n")
-        print("Close an open chart for a patient - 'close'\n")
-        print("add a symptom to a patient's chart - 'S'\n")
-        print("List all charts for a given patient - 'charts'\n")
-        print("Logout - 'exit'\n")
-        l = ["create", "close", "S", "charts"]
+        selectedOption = Nurse.showOptions()
+        while selectedOption != "exit":
 
-        while user != "exit":
-            user = raw_input("What would you like to do?\n")
-            if user in l:
-                patientHcno = raw_input("Patient Healthcare Number: ")
+            if selectedOption == "create":
+                patientHcno = raw_input("Enter the Patient's Health Care Number: ")
                 chartID = getChartID(patientHcno)
-                if user == "create":
-                    if chartID is not None:
-                        choice = raw_input("There is already a chart open for this patient."
-                                            "Would you like to create a new chart? (y/n): ")
-                        if choice is "n":
-                            continue
-                        else:
-                            closeChart(c, patientHcno)
-                            createChart(c, patientHcno)
-
-                elif user == "close":
-                    if chartID is None:
-                        print('There is no chart open for that patient')
+                if chartID is not None:
+                    choice = raw_input("There is already a chart open for this patient."
+                                        "Would you like to create a new chart? (y/n): ")
+                    if choice is "n":
                         continue
-                    closeChart(c, patientHcno)
+                    else:
+                        closeChart(patientHcno)
+                        createChart(patientHcno)
+                else:
+                    createChart(patientHcno)
 
-                elif user == "S":
-                    symptom = getSymptom()
-                    if chartID == None:
-                        print('There is no chart open for that patient')
-                        continue
-                    addSymptom(c, patientHcno, chartID, self.staffID, symptom)
+            elif selectedOption == "close":
+                patientHcno = raw_input("Enter the Patient's Health Care Number: ")
+                chartID = getChartID(patientHcno)
+                if chartID is None:
+                    print('There is no chart open for that patient')
+                    continue
+                closeChart(patientHcno)
 
-                elif user == "charts":
-                    if chartID is None:
-                        print('There is no chart open for that patient')
-                        continue
-                    getPatientCharts(c, patientHcno)
+            elif selectedOption == "S":
+                Nurse.addSymptomStory()
+            elif selectedOption == "C":
+                Doctor.patientChartStory()
+            else:
+                print("Invalid input try again.")
 
         print('Logging out... Goodbye!')
 
-    def createChart(c, patientHcno):
-        c.execute
+    @staticmethod
+    def showOptions():
+        print
+        print("**********************************************************")
+        print("Create new patient chart - 'create'")
+        print("Close a patient's chart - 'close'")
+        print("Add sympotm to chart - 'S'")
+        print("View patient charts - 'C'")
+        s = raw_input("Option? :'")
+        print("**********************************************************")
+        print
+        return s
+
+    def createChart(patientHcno):
         newChartId = getNewChartID(c)
-        c.execute(
+        Resources.getCursor().execute(
             '''
             INSERT INTO charts VALUES(?,?,date('now'), ?);
             ''', patientChartId, patientHcno, (None,))
         commit()
 
-    def closeChart(c, patientHcno):
+    def closeChart(patientHcno):
         patientsOpenChart = getMostRecentChart(c, patientHcno)
-        c.execute(
+        Resources.getCursor().execute(
             '''
             UPDATE charts SET edate = date('now') WHERE charId = ?;
             ''', patientChartId)
         commit()
 
     def getNewChartId(c):
-        c.execute(
+        Resources.getCursor().execute(
             '''
             SECLECT COUNT(*) FROM charts;
             '''
@@ -81,8 +80,8 @@ class Nurse(CareStaff):
         newId = row[0] + 1
         return format(newId, '05') #will left pad w/ zeros up to 5 digets
 
-    def getMostRecentChart(c, patientHcno):
-        c.execute(
+    def getMostRecentChart(patientHcno):
+        Resources.getCursor().execute(
             '''
             SELECT chart_id
             FROM charts
@@ -94,8 +93,8 @@ class Nurse(CareStaff):
         return row[0]
 
     # not sure if this works yet
-    def hasChartOpen(c, patientChartId):
-        c.execute(
+    def hasChartOpen(patientChartId):
+        Resources.getCursor().execute(
             '''
             SELECT edate
             FROM charts
@@ -106,8 +105,8 @@ class Nurse(CareStaff):
         row = c.fetchOne()
         return row[1] != None # false if None
 
-    def getChartID(c, hcno):
-        c.execute('SELECT chart_id FROM charts WHERE hcno=:hcno AND edate <> NULL;', {"hcno": hcno})
+    def getChartID(hcno):
+        Resources.getCursor().execute('SELECT chart_id FROM charts WHERE hcno=:hcno AND edate <> NULL;', {"hcno": hcno})
         chart_id = c.fetchone()
         if chart_id is not None:
             return chart_id[0]
