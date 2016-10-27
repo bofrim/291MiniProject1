@@ -10,8 +10,10 @@ class Nurse(CareStaff):
     @staticmethod
     def main(staff_id):
         CareStaff.staff_id = staff_id
+        print
+        print 'Welcome ' + Nurse.getNurseName(staff_id) + '!'
         selectedOption = ""
-        while selectedOption != "exit":
+        while selectedOption != "E":
             selectedOption = Nurse.showOptions()
             if selectedOption == "create":
                 patientHcno = Nurse.getHcno()
@@ -40,7 +42,7 @@ class Nurse(CareStaff):
                 Nurse.addSymptomStory()
             elif selectedOption == "C":
                 Nurse.patientChartStory()
-            elif selectedOption is not "exit":
+            elif selectedOption is not "E":
                 print("Invalid input try again.")
 
         print
@@ -55,6 +57,7 @@ class Nurse(CareStaff):
         print("Close a patient's chart - 'close'")
         print("Add sympotm to chart - 'S'")
         print("View patient charts - 'C'")
+        print("Exit - 'E'")
         s = raw_input("Option? :'")
         print("**********************************************************")
         print
@@ -134,6 +137,18 @@ class Nurse(CareStaff):
         )
         row = Resources.getCursor().fetchone()
         return row != None
+
+    @staticmethod
+    def getNurseName(staff_id):
+        Resources.getCursor().execute(
+            '''
+            SELECT name
+            FROM staff
+            WHERE staff_id = ?
+            ''', (staff_id,)
+        )
+        row = Resources.getCursor().fetchone()
+        return row[0]
 
 #______________________________________________________Views_________
     @staticmethod
