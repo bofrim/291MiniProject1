@@ -71,7 +71,6 @@ class CareStaff:
         for row in result:
             print "Type: " + row[0] + " Date: " + row[1] + " Info: " + row[2]
         print
-        # print Login.getCursor().fetchAll()
     @staticmethod
     def addSymptom( patientHcno, patientChartID, staffId, symptom):
 
@@ -168,4 +167,9 @@ class CareStaff:
         return raw_input("Enter the diagnosis: ")
     @staticmethod
     def getMedication():
-        return raw_input("Enter the medication: ")
+        medName = raw_input("Enter medication name: ")
+        medAmount = raw_input("Enter dosage amount: ")
+        medStart = raw_input("Enter medication start date: ")
+        medEnd = raw_input("Enter medication end date: ")
+        medDict = { "name" : medName, "amount" : medAmount, "start" : medStart, "end" : medEnd}
+        return medDict
