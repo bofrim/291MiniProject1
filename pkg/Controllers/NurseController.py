@@ -10,44 +10,56 @@ class Nurse(CareStaff):
     @staticmethod
     def main(staff_id):
         CareStaff.staff_id = staff_id
-        print
-        print 'Welcome ' + Nurse.getNurseName(staff_id) + '!'
         selectedOption = ""
-        while selectedOption != "E":
+        while selectedOption != "exit":
             selectedOption = Nurse.showOptions()
             if selectedOption == "create":
-                patientHcno = Nurse.getHcno()
-                if Nurse.patientInDB(patientHcno) == False:
-                    print "Patient not in DB..."
-                    print
-                    continue
-                openChartID = Nurse.getChartID(patientHcno)
-                if openChartID is not None:
-                    choice = Nurse.openNewChart()
-                    if choice is ("n" or "N"):
-                        continue
-                    else:
-                        Nurse.closeChart(patientHcno, openChartID)
-                        Nurse.createChart(patientHcno)
-                else:
-                    Nurse.createChart(patientHcno)
+                Nurse.createChartStory()
             elif selectedOption == "close":
-                patientHcno = Nurse.getHcno()
-                openChartID = Nurse.getChartID(patientHcno)
-                if openChartID is None:
-                    print('There is no chart open for that patient')
-                    continue
-                Nurse.closeChart(patientHcno, openChartID)
+                Nurse.closeChartStory()
             elif selectedOption == "S":
                 Nurse.addSymptomStory()
             elif selectedOption == "C":
                 Nurse.patientChartStory()
-            elif selectedOption is not "E":
-                print("Invalid input try again.")
-
+            elif selectedOption is not "exit":
+                print("Invalid input.")
         print
         print('Logging out... Goodbye!')
         print
+
+    @staticmethod
+    def createChartStory():
+        patientHcno = Nurse.getHcno()
+        if Nurse.patientInDB(patientHcno) == False:
+            print
+            print "Patient not in DB..."
+            return
+        openChartID = Nurse.getChartID(patientHcno)
+        if openChartID is not None:
+            while(1):
+                choice = Nurse.openNewChart()
+                if choice is "n" or choice is "N":
+                    print
+                    print 'Returning to menu...'
+                    return
+                elif choice is "y" or choice is "Y":
+                    print
+                    print 'Creating new chart for ' + Nurse.getPatientName(patientHcno) + '...'
+                    Nurse.closeChart(patientHcno, openChartID)
+                    Nurse.createChart(patientHcno)
+                    break
+        else:
+            Nurse.createChart(patientHcno)
+
+    @staticmethod
+    def closeChartStory():
+        patientHcno = Nurse.getHcno()
+        openChartID = Nurse.getChartID(patientHcno)
+        if openChartID is None:
+            print
+            print('There is no chart open for that patient')
+            return
+        Nurse.closeChart(patientHcno, openChartID)
 
     @staticmethod
     def showOptions():
@@ -57,7 +69,6 @@ class Nurse(CareStaff):
         print("Close a patient's chart - 'close'")
         print("Add sympotm to chart - 'S'")
         print("View patient charts - 'C'")
-        print("Exit - 'E'")
         s = raw_input("Option? :'")
         print("**********************************************************")
         print
@@ -139,13 +150,13 @@ class Nurse(CareStaff):
         return row != None
 
     @staticmethod
-    def getNurseName(staff_id):
+    def getPatientName(patientHcno):
         Resources.getCursor().execute(
             '''
             SELECT name
-            FROM staff
-            WHERE staff_id = ?
-            ''', (staff_id,)
+            FROM patients
+            WHERE hcno = ?
+            ''', (patientHcno,)
         )
         row = Resources.getCursor().fetchone()
         return row[0]
