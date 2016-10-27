@@ -29,15 +29,22 @@ class Doctor(CareStaff):
 
     @staticmethod
     def showOptions():
+        print
+        print("**********************************************************")
         print("View patient chart - 'C'")
         print("Add diagnois to chart - 'D'")
         print("Add sympotm to chart - 'S'")
         print("Add medication to chart - 'M'")
         s = raw_input("Option? :'")
+        print("**********************************************************")
+        print
         return s
 
     @staticmethod
-    def main():
+    def main(staff_id):
+        CareStaff.staff_id = staff_id
+        print(type(CareStaff.staff_id))
+        print "From inside doc" + CareStaff.staff_id
         # showOptions`
         while(1):
             selectedOption = Doctor.showOptions()
@@ -48,7 +55,7 @@ class Doctor(CareStaff):
             elif(selectedOption == 'D'):
                 print
             elif(selectedOption == 'S'):
-                print()
+                Doctor.addSymptomStory()
             elif(selectedOption == 'M'):
                 print()
             else:

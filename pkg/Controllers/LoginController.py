@@ -1,7 +1,11 @@
 from getpass import getpass
 import sqlite3
 from DoctorController import Doctor
+<<<<<<< HEAD
 from AdministrationController import AdminStaff
+=======
+from NurseController import Nurse
+>>>>>>> origin/master
 
 import hashlib
 
@@ -13,12 +17,13 @@ class Login:
     def loginNurse(staff_id):
         # Create a Nurse
         print "Hello Nurse"
-        Nurse(staff_id)
+        Nurse.main(staff_id)
 
     def loginDoctor(staff_id):
         # Create a Docter
         print "Hello doctor"
-        Doctor.main()
+        print(staff_id)
+        Doctor.main(staff_id)
 
 
 
@@ -54,6 +59,8 @@ class Login:
     def validateLogin(self, login, passwordHash, c):
         c.execute('SELECT staff_id FROM staff WHERE login=:login AND password=:password', {"login": login, "password": passwordHash})
         staff_id = c.fetchone()
+        print staff_id
+        print type(staff_id[0])
         if staff_id is not None:
             return staff_id[0]
         else: return None
