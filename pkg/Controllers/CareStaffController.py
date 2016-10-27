@@ -1,45 +1,59 @@
+from SharedResources import Resources
 
 class CareStaff:
     # Variables for careStaff Employees
     staff_id = None
     name = None
 
+    @staticmethod
+    def patientChartStory():
+        hcno = CareStaff.getHcno()
+        CareStaff.getPatientCharts(hcno)
+        chartNo = CareStaff.getChartNo()
+        CareStaff.getChartInfo(hcno,chartNo)
+
+    @staticmethod
     def getPatientCharts( patientHcno):
-        Login.getCursor().execute('''
+        Resources.getCursor().execute('''
             SELECT chart_id, adate, edate
             FROM charts
             WHERE hcno = ?
             ORDER BY adate;
-                ''', patientHcno)
-        print "Patient: ", patientHcno , "\n"
-        print Login.getCursor().fetchAll()
+                ''', (patientHcno,))
+        # print "Patient: ", patientHcno , "\n"
+        result=Resources.getCursor().fetchall()
+        for row in result:
+            edate = row[2] if row[2]!= None else "None"
+            print "Chart Id: " + row[0] + " Start: " + row[1] + " End: " + edate
+            
 
+    @staticmethod
     def getChartInfo( patientHcno, patientChartID):
-        Login.getCursor().execute('''
+        Resources.getCursor().execute('''
             SELECT 'S' AS TYPE, obs_date as DATE, symptom AS INFO
             FROM symptoms
             WHERE chart_id = ?
             UNION
             SELECT 'D' AS TYPE, ddate AS DATE, diagnosis AS INFO
-            FROM diagnosis
+            FROM diagnoses
             WHERE chart_id = ?
             UNION
             SELECT 'M' AS TYPE, mdate AS DATE, drug_name || ' ' || amount || ' ' || start_med || ' ' || end_med
             FROM medications
             WHERE chart_id = ?
             ORDER BY DATE;
-                ''', patientChartID,patientChartID,patientChartID)
+                ''', (patientChartID,patientChartID,patientChartID))
         print "Patient: ", patientHcno , " Chart: ", patientChartID,"\n"
         # print Login.getCursor().fetchAll()
-
+    @staticmethod
     def addSymptom( patientHcno, patientChartID, staffId, symptom):
 
         '''Check if the symptom is already located in that patient's chart'''
 
-        Login.getCursor().execute('''
+        Resources.getCursor().execute('''
             INSERT INTO symptoms VALUES(?, ?, ?, date('now') ,?);
             ''', patientHcno, patientChartID, staffId, symptom)
-        commit()
+        Resources.commit()
 
     #______________________________________________________Views_________
     @staticmethod
@@ -48,6 +62,9 @@ class CareStaff:
     @staticmethod
     def getHcno():
         return raw_input("Enter the Patient's Health Care Number: ")
+    @staticmethod
+    def getChartNo():
+        return raw_input("Enter the Patient's Chart Number: ")        
     @staticmethod
     def getSymptom():
         return raw_input("Enter the observed symptom: ")

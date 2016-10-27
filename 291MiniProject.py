@@ -1,4 +1,4 @@
-from pkg.Controllers import LoginContoller
+from pkg.Controllers import LoginController
 import sqlite3
 from sqlite3 import OperationalError
 

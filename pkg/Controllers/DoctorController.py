@@ -1,7 +1,7 @@
 from CareStaffController import CareStaff
+from SharedResources import Resources
 
-
-class Docter(CareStaff):
+class Doctor(CareStaff):
     
     # options = []
 
@@ -16,19 +16,17 @@ class Docter(CareStaff):
 
         '''Check if the diagnosis is already located in that patient's chart'''
 
-        Login.getCursor().execute('''
+        Resources.getCursor().execute('''
             INSERT INTO diagnoses VALUES(?, ?, ?, date('now') ,?);
             ''', patientHcno, patientChartID, staffId, diagnosis)
-        Login.commit()
+        Resources.commit()
 
     def addMedication(c , patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName):
-        Login.getCursor().execute('''
+        Resources.getCursor().execute('''
             INSERT INTO medications VALUES(?, ?, ?, date('now'), ?, ?, ?, ?);
             ''', patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName)
-        Login.commit()
+        Resources.commit()
 
-    def commit():
-        Login.commit()
 
     @staticmethod
     def showOptions():
@@ -43,12 +41,11 @@ class Docter(CareStaff):
     def main():
         # showOptions`
         while(1):
-            selectedOption = Docter.showOptions()
+            selectedOption = Doctor.showOptions()
             if(selectedOption == 'E'):
                 break #return to login controller
             elif(selectedOption == 'C'):
-                s = raw_input("hcno :'")
-                Docter.getPatientCharts(s)
+                Doctor.patientChartStory()
             elif(selectedOption == 'D'):
                 print
             elif(selectedOption == 'S'):
@@ -58,14 +55,5 @@ class Docter(CareStaff):
             else:
                 print("Invalid input try again.")
 
-<<<<<<< HEAD:pkg/Controllers/DocterController.py
-=======
-        selection = DoctorViews.menu()
-    options = {
-    # "getPatientCharts" : ("Get a list of all of a specified patient's charts. Then select a chart to view.", getPatientCharts),
-    # "addSymptom" : ("Add a symptom to the chart of a specified patient.", addSymptom),
-    "addDiagnosis" : ("Add a diagnoses to the chart of a specified patient.", addDiagnosis),
-    "addMedication" : ("Perscribe a medication to a specified patient", addMedication)
-    }
->>>>>>> 570d9d60ec73a79cb27754951ab6dc629e113f39:pkg/Controllers/DoctorController.py
+
 
