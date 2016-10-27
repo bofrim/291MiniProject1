@@ -137,6 +137,9 @@ class AdminStaff:
     @staticmethod
     def printTotalsReport(categories):
         print
+        if len(categories.keys()) is 0:
+            print "No Results"
+            return
         for cat in categories.keys():
             print cat + ": "+ str(categories[cat][0])
             for drug in categories[cat][1]:
@@ -145,6 +148,9 @@ class AdminStaff:
     @staticmethod
     def printDoctorReport(doctors):
         print
+        if len(doctors.keys()) is 0:
+            print "No Results"
+            return
         for doc in doctors.keys():
             print AdminStaff.getDoctorName(doc) + ": "
             for drug_amount in doctors[doc]:
@@ -153,6 +159,9 @@ class AdminStaff:
     @staticmethod
     def printPersciptionsReport(persciptions):
         print
+        if len(persciptions.keys()) is 0:
+            print "No Results"
+            return
         for diagnosis in persciptions.keys():
             print diagnosis + ": "
             for drug_name in persciptions[diagnosis]:
@@ -162,6 +171,9 @@ class AdminStaff:
     @staticmethod
     def printDiagnosisReport(diagnosisReport):
         print
+        if len(diagnosisReport.keys()) is 0:
+            print "No Results"
+            return
         for medication in diagnosisReport.keys():
             print medication + ": "
             for diagnosis in diagnosisReport[medication]:
@@ -192,7 +204,7 @@ class AdminStaff:
                 break #return to login controller
             elif(selectedOption == 'C'):
                 AdminStaff.formatReport_DrugTotals()
-            elif(selectedOption == 'Doc'):
+            elif(selectedOption == 'Dr'):
                 AdminStaff.formatReport_DoctorTotals()
             elif(selectedOption == 'P'):
                 AdminStaff.formatReport_Perscriptions()
