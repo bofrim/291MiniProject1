@@ -14,20 +14,16 @@ class Login:
 
     def loginNurse(staff_id):
         # Create a Nurse
-        print "Hello Nurse"
         Nurse.main(staff_id)
 
     def loginDoctor(staff_id):
         # Create a Docter
-        print "Hello doctor"
-        print(staff_id)
         Doctor.main(staff_id)
 
 
 
     def loginAdmin(staff_id):
         # Create an admin
-        print "Hello AdminStaff"
         AdminStaff.main()
 
     loginAs = {

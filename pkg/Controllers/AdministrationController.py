@@ -73,7 +73,6 @@ class AdminStaff:
         categoryTotals = AdminStaff.drugTotalsByCategory(startD, endD)
         categories = {} #dictionary: {<category name>:tuple(<category total>, [list of tuples(drug name, drug total)])}
         for row in categoryTotals:
-            print row
             categories[row[0]] = (row[1], [])
         nameTotals = AdminStaff.drugTotalsByName(startD, endD)
         for row in nameTotals:
@@ -171,14 +170,17 @@ class AdminStaff:
 
     @staticmethod
     def showOptions():
-        print("____________________________________________________")
-        print("Generate a report on drugs by category - 'C'")
-        print("Generate a report on drugs by doctor - 'Doc'")
-        print("Generate a report listing all drug persciprions after diagnoses - 'P'")
-        print("Generate a report listing all diagnoses made before the persciption of a drug. - 'D'")
+
+        print("_______________________________________________")
+        print("-----------------------------------------------")
+        print("C: Generate a report on drugs by category")
+        print("Dr: Generate a report on drugs by doctor")
+        print("P: List all persciprions after given diagnoses")
+        print("D: List all diagnoses made before the persciption of a given drug.")
         print("Exit - 'E'")
         s = raw_input("Option? : ")
-        print("____________________________________________________")
+        print("-----------------------------------------------")
+        print("_______________________________________________\n")
         return s
 
     @staticmethod
@@ -198,46 +200,3 @@ class AdminStaff:
                 AdminStaff.formatReport_Diagnoses()
             else:
                 print("Invalid input try again.")
-
-
-
-# SELECT d.category, d.drug_name, SUM(m.amount)
-# FROM drugs d, medications m
-# WHERE d.drug_name = m.drug_name
-# AND m.mdate > date('2000-01-01 02:34:56') AND m.mdate < date('2054-01-01 02:34:56')
-# GROUP BY d.category, d.drug_name;
-
-#
-#
-#
-#
-#
-# SELECT d.category, d.drug_name, SUM(m.amount)
-# FROM drugs d, medications m
-# WHERE d.drug_name = m.drug_name
-# AND m.mdate > date('2000-01-01 02:34:56') AND m.mdate < date('2054-01-01 02:34:56')
-# GROUP BY staff_id, d.drug_name;
-
-
-
-
-# SELECT d.category, d.drug_name, SUM(m.amount)
-# FROM drugs d, medications m
-# WHERE d.drug_name = m.drug_name
-# AND m.mdate > date('2000-01-01 02:34:56') AND m.mdate < date('2054-01-01 02:34:56')
-# GROUP BY d.category, d.drug_name;
-
-#
-#
-#
-#
-# SELECT staff_id, drug_name, SUM(amount)
-# FROM medications
-# WHERE mdate > date('2000-01-01 02:34:56') AND mdate < date('2054-01-01 02:34:56')
-# GROUP BY staff_id, drug_name;
-#
-#
-# SELECT staff_id, drug_name, SUM(amount)
-# FROM medications
-# WHERE mdate > date('2000-01-01 02:34:56') AND mdate < date('2054-01-01 02:34:56')
-# GROUP BY staff_id, drug_name;
