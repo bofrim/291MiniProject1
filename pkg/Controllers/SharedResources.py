@@ -10,7 +10,6 @@ class Resources:
     def getConn():
         if Resources.conn == None:
             path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), Resources.dbName)
-            print(path)
             Resources.conn = sqlite3.connect(path)
         return Resources.conn
 

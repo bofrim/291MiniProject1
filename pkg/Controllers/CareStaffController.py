@@ -12,6 +12,24 @@ class CareStaff:
         chartNo = CareStaff.getChartNo()
         CareStaff.getChartInfo(hcno,chartNo)
 
+
+    @staticmethod
+    def addSymptomStory():
+        print "from inside careStaff :" + CareStaff.staff_id
+        hcno = CareStaff.getHcno()
+        # TO DO CHECK IF patient exists
+        if(CareStaff.hasChartOpen(hcno) == False):
+            openNew = raw_input("No chart open for patient. Open new one? [Y/N]")
+            if(openNew == "Y" or openNew == "y"):
+                CareStaff.createChart(hcno)
+            else:
+                return
+        mostRecentChartId = CareStaff.getMostRecentChart(hcno)
+        symptonName = CareStaff.getSymptom()
+        CareStaff.addSymptom( hcno, mostRecentChartId, CareStaff.staff_id, symptonName)
+
+
+
     @staticmethod
     def getPatientCharts( patientHcno):
         Resources.getCursor().execute('''
@@ -25,7 +43,7 @@ class CareStaff:
         for row in result:
             edate = row[2] if row[2]!= None else "None"
             print "Chart Id: " + row[0] + " Start: " + row[1] + " End: " + edate
-            
+        print
 
     @staticmethod
     def getChartInfo( patientHcno, patientChartID):
@@ -46,6 +64,7 @@ class CareStaff:
         result=Resources.getCursor().fetchall()
         for row in result:
             print "Type: " + row[0] + " Date: " + row[1] + " Info: " + row[2]
+        print
         # print Login.getCursor().fetchAll()
     @staticmethod
     def addSymptom( patientHcno, patientChartID, staffId, symptom):
@@ -53,9 +72,42 @@ class CareStaff:
         '''Check if the symptom is already located in that patient's chart'''
 
         Resources.getCursor().execute('''
-            INSERT INTO symptoms VALUES(?, ?, ?, date('now') ,?);
-            ''', patientHcno, patientChartID, staffId, symptom)
+            INSERT INTO symptoms VALUES(?, ?, ?, (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')) ,?);
+            ''', (patientHcno, patientChartID, staffId, symptom))
         Resources.commit()
+
+    @staticmethod      
+    def hasChartOpen(patientChartId):
+        Resources.getCursor().execute(
+            '''
+            SELECT edate
+            FROM charts
+            WHERE hcno = ?
+            ORDER BY adate
+            ''',(patientChartId,))
+        row = Resources.getCursor().fetchone()
+        return row[0] != None # false if None
+
+    @staticmethod  
+    def createChart( patientHcno):
+        newChartId = getNewChartID(c)
+        Resources.getCursor().execute(
+            '''
+            INSERT INTO charts VALUES(?,?,STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'), ?);
+            ''', (patientChartId, patientHcno, None))
+        Resources.commit()
+
+    @staticmethod  
+    def getMostRecentChart( patientHcno):
+        Resources.getCursor().execute(
+            '''
+            SELECT chart_id
+            FROM charts
+            WHERE hcno = ?
+            ORDER BY adate
+            ''',(patientHcno,))
+        row = Resources.getCursor().fetchone()
+        return row[0]
 
     #______________________________________________________Views_________
     @staticmethod
