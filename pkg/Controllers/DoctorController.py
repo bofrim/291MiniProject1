@@ -7,17 +7,32 @@ class Doctor(CareStaff):
     # def __init__(self,staffId){
     #     self.staffId = staffId
     # }
+    @staticmethod
+    def addDiagnosisStory():
+        hcno = CareStaff.getHcno()
+        if(CareStaff.patientExists(hcno) == False):
+            print("Patient does not exist. Return to menu.")
+            return
+        if(CareStaff.hasChartOpen(hcno) == False):
+            openNew = raw_input("No chart open for patient. Open new one? [Y/N]")
+            if(openNew == "Y" or openNew == "y"):
+                CareStaff.createChart(hcno)
+            else:
+                return
+        mostRecentChartId = CareStaff.getMostRecentChart(hcno)
+        diagnosisName = CareStaff.getDiagnosis()
+        if(Doctor.diagnosisExistsForChart(mostRecentChartId,diagnosisName) == True):
+            print
+            print "Latest Chart already has diagnosis '" + diagnosisName + "'" 
+            return
+        Doctor.addDiagnosis( hcno, mostRecentChartId, CareStaff.staff_id, diagnosisName)
 
-
-    staff_id = 0
-
-    def addDiagnosis(c , patientHcno, patientChartID, staffId, diagnosis):
-
+    @staticmethod
+    def addDiagnosis(patientHcno, patientChartID, staffId, diagnosis):
         '''Check if the diagnosis is already located in that patient's chart'''
-
         Resources.getCursor().execute('''
-            INSERT INTO diagnoses VALUES(?, ?, ?, date('now') ,?);
-            ''', patientHcno, patientChartID, staffId, diagnosis)
+            INSERT INTO diagnoses VALUES(?, ?, ?, STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW') ,?);
+            ''', (patientHcno, patientChartID, staffId, diagnosis))
         Resources.commit()
 
     def addMedication(c , patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName):
@@ -26,6 +41,17 @@ class Doctor(CareStaff):
             ''', patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName)
         Resources.commit()
 
+    @staticmethod
+    def diagnosisExistsForChart(chartNo, diagnosis):
+        Resources.getCursor().execute(
+            '''
+            SELECT * FROM
+            diagnoses 
+            WHERE chart_id = ?
+            AND diagnosis = ? COLLATE NOCASE;
+            ''',(chartNo,diagnosis))
+        row = Resources.getCursor().fetchone()
+        return row != None
 
     @staticmethod
     def showOptions():
@@ -53,7 +79,7 @@ class Doctor(CareStaff):
             elif(selectedOption == 'C'):
                 Doctor.patientChartStory()
             elif(selectedOption == 'D'):
-                print
+                Doctor.addDiagnosisStory()
             elif(selectedOption == 'S'):
                 Doctor.addSymptomStory()
             elif(selectedOption == 'M'):
