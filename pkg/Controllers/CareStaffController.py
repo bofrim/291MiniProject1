@@ -43,7 +43,9 @@ class CareStaff:
             WHERE chart_id = ?
             ORDER BY DATE;
                 ''', (patientChartID,patientChartID,patientChartID))
-        print "Patient: ", patientHcno , " Chart: ", patientChartID,"\n"
+        result=Resources.getCursor().fetchall()
+        for row in result:
+            print "Type: " + row[0] + " Date: " + row[1] + " Info: " + row[2]
         # print Login.getCursor().fetchAll()
     @staticmethod
     def addSymptom( patientHcno, patientChartID, staffId, symptom):
