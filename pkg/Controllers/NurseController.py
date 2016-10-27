@@ -27,7 +27,7 @@ class Nurse(CareStaff):
 
             elif selectedOption == "close":
                 patientHcno = raw_input("Enter the Patient's Health Care Number: ")
-                chartID = getChartID(patientHcno)
+                chartID = Nurse.getChartID(patientHcno)
                 if chartID is None:
                     print('There is no chart open for that patient')
                     continue
@@ -57,6 +57,7 @@ class Nurse(CareStaff):
         print
         return s
 
+    @staticmethod
     def createChart(patientHcno):
         newChartId = getNewChartID(c)
         Resources.getCursor().execute(
@@ -65,6 +66,7 @@ class Nurse(CareStaff):
             ''', patientChartId, patientHcno, (None,))
         commit()
 
+    @staticmethod
     def closeChart(patientHcno):
         patientsOpenChart = getMostRecentChart(c, patientHcno)
         Resources.getCursor().execute(
@@ -73,16 +75,18 @@ class Nurse(CareStaff):
             ''', patientChartId)
         commit()
 
+    @staticmethod
     def getNewChartId(c):
         Resources.getCursor().execute(
             '''
             SECLECT COUNT(*) FROM charts;
             '''
         )
-        row = c.fetchOne()
+        row = Resources.getCursor().fetchOne()
         newId = row[0] + 1
         return format(newId, '05') #will left pad w/ zeros up to 5 digets
 
+    @staticmethod
     def getMostRecentChart(patientHcno):
         Resources.getCursor().execute(
             '''
@@ -92,10 +96,10 @@ class Nurse(CareStaff):
             ORDER BY adate desc;
             '''
         )
-        row = c.fetchOne()
+        row = Resources.getCursor().fetchOne()
         return row[0]
 
-    # not sure if this works yet
+    @staticmethod
     def hasChartOpen(patientChartId):
         Resources.getCursor().execute(
             '''
@@ -105,12 +109,17 @@ class Nurse(CareStaff):
             ORDER BY adate;
             ''',patientChartId
         )
-        row = c.fetchOne()
+        row = Resources.getCursor().fetchOne()
         return row[1] != None # false if None
 
+    @staticmethod
     def getChartID(hcno):
-        Resources.getCursor().execute('SELECT chart_id FROM charts WHERE hcno=:hcno AND edate <> NULL;', {"hcno": hcno})
-        chart_id = c.fetchone()
+        Resources.getCursor().execute('''
+        SELECT chart_id
+        FROM charts
+        WHERE hcno = ? AND edate <> NULL;
+        ''', (hcno,))
+        chart_id = Resources.getCursor().fetchone()
         if chart_id is not None:
             return chart_id[0]
         else: return None
