@@ -13,30 +13,33 @@ class Nurse(CareStaff):
             selectedOption = Nurse.showOptions()
             if selectedOption == "create":
                 patientHcno = raw_input("Enter the Patient's Health Care Number: ")
-                chartID = getChartID(patientHcno)
-                if chartID is not None:
+                if Nurse.patientInDB(patientHcno) == False:
+                    print "Patient not in DB..."
+                    continue
+                openChartID = Nurse.getChartID(patientHcno)
+                if openChartID is not None:
                     choice = raw_input("There is already a chart open for this patient."
                                         "Would you like to create a new chart? (y/n): ")
-                    if choice is "n":
+                    if choice is ("n" or "N"):
                         continue
                     else:
-                        closeChart(patientHcno)
-                        createChart(patientHcno)
+                        Nurse.closeChart(patientHcno, openChartID)
+                        Nurse.createChart(patientHcno)
                 else:
-                    createChart(patientHcno)
+                    Nurse.createChart(patientHcno)
 
             elif selectedOption == "close":
                 patientHcno = raw_input("Enter the Patient's Health Care Number: ")
-                chartID = Nurse.getChartID(patientHcno)
-                if chartID is None:
+                openChartID = Nurse.getChartID(patientHcno)
+                if openChartID is None:
                     print('There is no chart open for that patient')
                     continue
-                closeChart(patientHcno)
+                Nurse.closeChart(patientHcno, openChartID)
 
             elif selectedOption == "S":
                 Nurse.addSymptomStory()
             elif selectedOption == "C":
-                Doctor.patientChartStory()
+                Nurse.patientChartStory()
             elif selectedOption is not "exit":
                 print("Invalid input try again.")
 
@@ -57,75 +60,107 @@ class Nurse(CareStaff):
         print
         return s
 
+    '''
+    creates new chart for specified patient with edate = NULL
+    '''
     @staticmethod
     def createChart(patientHcno):
-        newChartId = getNewChartID(c)
+        newChartId = Nurse.getNewChartId()
         Resources.getCursor().execute(
             '''
-            INSERT INTO charts VALUES(?,?,date('now'), ?);
-            ''', patientChartId, patientHcno, (None,))
-        commit()
+            INSERT INTO charts VALUES
+            (?, ?, date('now'), NULL);
+            ''', (newChartId, patientHcno,)
+        )
+        Resources.getConn().commit()
 
+    '''
+    closes the specified chart by setting edate to NULL
+    '''
     @staticmethod
-    def closeChart(patientHcno):
-        patientsOpenChart = getMostRecentChart(c, patientHcno)
+    def closeChart(patientHcno, chartID):
+        patientsOpenChart = chartID
         Resources.getCursor().execute(
             '''
-            UPDATE charts SET edate = date('now') WHERE charId = ?;
-            ''', patientChartId)
-        commit()
+            UPDATE charts SET edate = date('now') WHERE chart_id = ?;
+            ''', (patientsOpenChart,)
+        )
+        Resources.getConn().commit()
 
+    '''
+    returns the chart_id of the next chart to be created
+    '''
     @staticmethod
-    def getNewChartId(c):
+    def getNewChartId():
         Resources.getCursor().execute(
             '''
-            SECLECT COUNT(*) FROM charts;
+            SELECT COUNT(*)
+            FROM charts;
             '''
         )
-        row = Resources.getCursor().fetchOne()
+        row = Resources.getCursor().fetchone()
         newId = row[0] + 1
         return format(newId, '05') #will left pad w/ zeros up to 5 digets
 
+    # @staticmethod
+    # def getMostRecentChart(patientHcno):
+    #     Resources.getCursor().execute(
+    #         '''
+    #         SELECT chart_id
+    #         FROM charts
+    #         WHERE hcno = patientChartID
+    #         ORDER BY adate desc;
+    #         '''
+    #     )
+    #     row = Resources.getCursor().fetchone()
+    #     return row[0]
+    #
+    # @staticmethod
+    # def hasChartOpen(patientChartId):
+    #     Resources.getCursor().execute(
+    #         '''
+    #         SELECT edate
+    #         FROM charts
+    #         WHERE hcno = ?
+    #         ORDER BY adate;
+    #         ''',patientChartId
+    #     )
+    #     row = Resources.getCursor().fetchone()
+    #     return row[1] != None # false if None
+
+    '''
+    returns open chart for patient with hcno (edate = NULL)
+    returns False if no open chart
+    '''
     @staticmethod
-    def getMostRecentChart(patientHcno):
+    def getChartID(hcno):
         Resources.getCursor().execute(
             '''
             SELECT chart_id
             FROM charts
-            WHERE hcno = patientChartID
-            ORDER BY adate desc;
-            '''
+            WHERE hcno = ? AND edate IS NULL;
+            ''', (hcno,)
         )
-        row = Resources.getCursor().fetchOne()
-        return row[0]
-
-    @staticmethod
-    def hasChartOpen(patientChartId):
-        Resources.getCursor().execute(
-            '''
-            SELECT edate
-            FROM charts
-            WHERE hcno = ?
-            ORDER BY adate;
-            ''',patientChartId
-        )
-        row = Resources.getCursor().fetchOne()
-        return row[1] != None # false if None
-
-    @staticmethod
-    def getChartID(hcno):
-        Resources.getCursor().execute('''
-        SELECT chart_id
-        FROM charts
-        WHERE hcno = ? AND edate <> NULL;
-        ''', (hcno,))
         chart_id = Resources.getCursor().fetchone()
         if chart_id is not None:
             return chart_id[0]
         else: return None
 
-    def commit():
-        conn.commit()
+    '''
+    returns true if patient in current DB
+    '''
+    @staticmethod
+    def patientInDB(patientHcno):
+        Resources.getCursor().execute(
+            '''
+            SELECT *
+            FROM patients
+            WHERE hcno = ?
+            ''', (patientHcno,)
+        )
+        row = Resources.getCursor().fetchone()
+        return row != None
+
 #______________________________________________________Views_________
     @staticmethod
     def override():
