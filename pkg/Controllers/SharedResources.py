@@ -4,7 +4,7 @@ import os
 class Resources:
     conn = None
     cursor = None
-    dbName = "./data.db"
+    dbName = "./hospital.db"
 
     @staticmethod
     def getConn():

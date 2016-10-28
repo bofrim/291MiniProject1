@@ -21,9 +21,9 @@ def executeScriptsFromFile(filename,c):
             print "Command skipped: ", msg
 
 
-if not os.path.isfile("data.db"):
+if not os.path.isfile("hospital.db"):
     # Initialize the tables
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('hospital.db')
     c = conn.cursor()
     executeScriptsFromFile("p1-tables.sql",c)
     # Add the data
