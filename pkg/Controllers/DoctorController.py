@@ -43,7 +43,7 @@ class Doctor(CareStaff):
         # check if drug exists
         if(Doctor.drugExits(medInfo['name']) == False):
             print
-            print "Drug '" + medInfo['name'] + " does not exist"
+            print "Drug '" + medInfo['name'] + "' does not exist"
             return
 
         #check is amount is numeric
@@ -69,7 +69,7 @@ class Doctor(CareStaff):
         print(medInfo['amount'])
         while(int(medInfo['amount']) > int(sugAmount)):
             print "WARNING: Perscribed amount '"+ str(medInfo['amount']) +"' is greater than the suggested amount '" + str(sugAmount)+ "'"
-            enterNewAmount = raw_input("Would you like to enter a new anount? [Y/N]")
+            enterNewAmount = raw_input("Would you like to enter a new anount? [Y/N]: ")
             if(enterNewAmount == "Y" or enterNewAmount == "y"):
                 enterNewAmount = raw_input("Enter new amount: ")
                 medInfo['amount'] = enterNewAmount
@@ -84,7 +84,7 @@ class Doctor(CareStaff):
         for allergy in inferedAllergies:
             print "WARNING: Patient is allergic to '" + allergy [0] + "' so they might be allergic to '" + medInfo['name'] + "'"
         if(Doctor.patientIsAllergic(hcno, medInfo['name']) or len(inferedAllergies)):
-            stillContinue = raw_input("Would you still like to perscribe the medication? [Y/N]")
+            stillContinue = raw_input("Would you still like to perscribe the medication? [Y/N]: ")
             if(stillContinue != "Y" and stillContinue != "y"):
                 print
                 print "Perscription canceled"

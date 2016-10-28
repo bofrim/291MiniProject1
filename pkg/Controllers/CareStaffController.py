@@ -68,8 +68,11 @@ class CareStaff:
             ORDER BY DATE;
                 ''', (patientChartID,patientChartID,patientChartID))
         result=Resources.getCursor().fetchall()
-        for row in result:
-            print "Type: " + row[0] + " Date: " + row[1] + " Info: " + row[2]
+        if(len(result) == 0):
+            print "No charts exist for patient '" + patientHcno  + "'"
+        else:
+            for row in result:
+                print "Type: " + row[0] + " Date: " + row[1] + " Info: " + row[2]
         print
     @staticmethod
     def addSymptom( patientHcno, patientChartID, staffId, symptom):
