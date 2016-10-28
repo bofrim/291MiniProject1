@@ -8,7 +8,8 @@ class CareStaff:
     @staticmethod
     def patientChartStory():
         hcno = CareStaff.getHcno()
-        CareStaff.getPatientCharts(hcno)
+        if(CareStaff.getPatientCharts(hcno) == False):
+            return # no charts found
         chartNo = CareStaff.getChartNo()
         CareStaff.getChartInfo(hcno,chartNo)
 
@@ -46,10 +47,16 @@ class CareStaff:
                 ''', (patientHcno,))
         # print "Patient: ", patientHcno , "\n"
         result=Resources.getCursor().fetchall()
-        for row in result:
-            edate = row[2] if row[2]!= None else "None"
-            print "Chart Id: " + row[0] + " Start: " + row[1] + " End: " + edate
-        print
+        if(len(result) == 0):
+            print "No charts exist for patient '" + patientHcno + "'"
+            print
+            return False
+        else:
+            for row in result:
+                edate = row[2] if row[2]!= None else "None"
+                print "Chart Id: " + row[0] + " Start: " + row[1] + " End: " + edate
+                print
+            return True
 
     @staticmethod
     def getChartInfo( patientHcno, patientChartID):
@@ -69,15 +76,13 @@ class CareStaff:
                 ''', (patientChartID,patientChartID,patientChartID))
         result=Resources.getCursor().fetchall()
         if(len(result) == 0):
-            print "No charts exist for patient '" + patientHcno  + "'"
+            print "No lines exits for chart '" + patientChartID  + "'"
         else:
             for row in result:
                 print "Type: " + row[0] + " Date: " + row[1] + " Info: " + row[2]
         print
     @staticmethod
     def addSymptom( patientHcno, patientChartID, staffId, symptom):
-
-        '''Check if the symptom is already located in that patient's chart'''
 
         Resources.getCursor().execute('''
             INSERT INTO symptoms VALUES(?, ?, ?, (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')) ,?);

@@ -46,8 +46,7 @@ INSERT INTO patients VALUES
 ('88163', 'Rachel', '20-25', 'Ottawa ON, 80 Street, 43 Street, 67 Ave, K1X1H2', '250-750-7759', '250-868-7191'),
 ('35214', 'Ashley', '55-60', 'Calgary AB, 38 Street, 94 Ave, T1X3E7', '998-566-3327', '116-893-6509'),
 ('54328', 'Kate', '55-60', 'Vancouver BC, 45 Street, 88 Ave, V5K0A2', '452-838-1289', '604-334-1832'),
-('00372', 'Greg', '30-35', 'Toronto ON, 132 Street, 31 Ave, M4D1A7', '124-838-1117', '116-287-1789'),
-('00666', 'Greg', '30-35', 'Toronto ON, 132 Street, 31 Ave, M4D1A7', '124-838-1117', '116-287-1789');
+('00372', 'Greg', '30-35', 'Toronto ON, 132 Street, 31 Ave, M4D1A7', '124-838-1117', '116-287-1789');
 
 -- charts(chart_id, hcno, adate, edate)
 -- no chart for Ashley and Kate
@@ -108,7 +107,7 @@ INSERT INTO drugs VALUES
 ('prozac', 'anti-depressant'),
 ('obizur', 'analgesic'),
 ('motrin', 'anti-inflammatory'),
-('aleve', 'anti-inflammatory'), 
+('aleve', 'anti-inflammatory'),
 ('metformin', 'salicylate'),
 ('drugZ', 'salicylate');
 

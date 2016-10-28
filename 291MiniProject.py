@@ -2,8 +2,9 @@ from pkg.Controllers import LoginController
 import sqlite3
 from sqlite3 import OperationalError
 import os.path
+import sys
 
-def executeScriptsFromFile(filename):
+def executeScriptsFromFile(filename,c):
     # Open and read sql file
     fd = open(filename, 'r')
     commandFile = fd.read()
@@ -20,15 +21,14 @@ def executeScriptsFromFile(filename):
             print "Command skipped: ", msg
 
 
-
-
-# Connect to the database
-conn = sqlite3.connect('data.db')
-c = conn.cursor()
 if not os.path.isfile("data.db"):
+    print "Here"
     # Initialize the tables
-    executeScriptsFromFile("initDb.sql")
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+    executeScriptsFromFile("p1-tables.sql",c)
     # Add the data
-    executeScriptsFromFile("data.sql")
+    executeScriptsFromFile(sys.argv[1] + ".sql",c)
+    conn.commit()
 # Start the program
-session = LoginController.Login(c)
+session = LoginController.Login()
