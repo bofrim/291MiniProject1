@@ -83,7 +83,7 @@ class Nurse(CareStaff):
         Resources.getCursor().execute(
             '''
             INSERT INTO charts VALUES
-            (?, ?, date('now'), NULL);
+            (?, ?, STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'), NULL);
             ''', (newChartId, patientHcno,)
         )
         Resources.getConn().commit()
@@ -96,7 +96,7 @@ class Nurse(CareStaff):
         patientsOpenChart = chartID
         Resources.getCursor().execute(
             '''
-            UPDATE charts SET edate = date('now') WHERE chart_id = ?;
+            UPDATE charts SET edate = STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW') WHERE chart_id = ?;
             ''', (patientsOpenChart,)
         )
         Resources.getConn().commit()

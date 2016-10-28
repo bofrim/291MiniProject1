@@ -47,7 +47,8 @@ INSERT INTO patients VALUES
 ('35214', 'Ashley', '55-60', 'Calgary AB, 38 Street, 94 Ave, T1X3E7', '998-566-3327', '116-893-6509'),
 ('54328', 'Kate', '55-60', 'Vancouver BC, 45 Street, 88 Ave, V5K0A2', '452-838-1289', '604-334-1832'),
 ('00372', 'Greg', '30-35', 'Toronto ON, 132 Street, 31 Ave, M4D1A7', '124-838-1117', '116-287-1789'),
-('00666', 'Greg', '30-35', 'Toronto ON, 132 Street, 31 Ave, M4D1A7', '124-838-1117', '116-287-1789');
+('00666', 'Greg', '30-35', 'Toronto ON, 132 Street, 31 Ave, M4D1A7', '124-838-1117', '116-287-1789'),
+('00777', 'Frank', '30-35', 'Toronto ON, 132 Street, 31 Ave, M4D1A7', '124-838-1117', '116-287-1789');
 
 -- charts(chart_id, hcno, adate, edate)
 -- no chart for Ashley and Kate
@@ -117,6 +118,7 @@ INSERT INTO dosage VALUES
 ('abelcet', '20-25', 2),
 ('jardiance', '10-15', 10),
 ('niacin', '20-25', 4),
+('niacin', '30-35', 4),
 ('prozac', '55-60', 1),
 ('prozac', '30-35', 1), -- test for greg infered allergy
 ('obizur', '5-10', 2),

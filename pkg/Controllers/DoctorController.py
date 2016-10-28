@@ -9,6 +9,7 @@ class Doctor(CareStaff):
     #     self.staffId = staffId
     # }
 
+    #logical flow for adding a symptom
     @staticmethod
     def addSymptomStory():
         hcno = CareStaff.getHcno()
@@ -20,13 +21,19 @@ class Doctor(CareStaff):
             print "Patient does not have an open chart. Get a nurse to open one."
             return
         mostRecentChartId = CareStaff.getMostRecentChart(hcno)
+        if(mostRecentChartId == -1 ):
+            print
+            print "Patient does not have any charts"
+            return
         symptomName = CareStaff.getSymptom()
         if(CareStaff.symptomExistsForChart(mostRecentChartId,symptomName) == True):
             print
             print "Latest Chart already has symptom '" + symptomName + "'" 
             return
         CareStaff.addSymptom( hcno, mostRecentChartId, CareStaff.staff_id, symptomName)
+        print "Symptom '" + symptomName + "' added to chart '" + mostRecentChartId + "'"
 
+    #logical flow for adding a medication
     @staticmethod
     def addMedicationStory():
         hcno = CareStaff.getHcno()
@@ -65,8 +72,12 @@ class Doctor(CareStaff):
 
         # check dosage amount
         sugAmount = Doctor.getSuggestedAmount(hcno,medInfo["name"])
-        print(sugAmount)
-        print(medInfo['amount'])
+
+        if(sugAmount == -1):
+            print
+            print "No '" + medInfo["name"] + "' dosage information for the age range of patient '" + hcno + "'"
+            return
+
         while(int(medInfo['amount']) > int(sugAmount)):
             print "WARNING: Perscribed amount '"+ str(medInfo['amount']) +"' is greater than the suggested amount '" + str(sugAmount)+ "'"
             enterNewAmount = raw_input("Would you like to enter a new anount? [Y/N]: ")
@@ -88,10 +99,12 @@ class Doctor(CareStaff):
             if(stillContinue != "Y" and stillContinue != "y"):
                 print
                 print "Perscription canceled"
-                print
+                return
         Doctor.addMedication(hcno, mostRecentChartId, CareStaff.staff_id, medInfo["start"] , medInfo["end"], medInfo["amount"] , medInfo["name"])
+        print "Medication '" + medInfo["name"] + "' added to chart '" + mostRecentChartId + "'"
 
 
+    #logical flow for adding a diagnosis
     @staticmethod
     def addDiagnosisStory():
         hcno = CareStaff.getHcno()
@@ -103,13 +116,19 @@ class Doctor(CareStaff):
             print "Patient does not have an open chart. Get a nurse to open one."
             return
         mostRecentChartId = CareStaff.getMostRecentChart(hcno)
+        if(mostRecentChartId == -1 ):
+            print
+            print "Patient does not have any charts"
+            return
         diagnosisName = CareStaff.getDiagnosis()
         if(Doctor.diagnosisExistsForChart(mostRecentChartId,diagnosisName) == True):
             print
             print "Latest Chart already has diagnosis '" + diagnosisName + "'" 
             return
         Doctor.addDiagnosis( hcno, mostRecentChartId, CareStaff.staff_id, diagnosisName)
+        print "Diagnosis '" + diagnosisName + "' added to chart '" + mostRecentChartId + "'"
 
+    #get a list of infered allergies for a give patient and drugname
     @staticmethod
     def getInferedAllergies(hcno, drugName):
         Resources.getCursor().execute(
@@ -123,6 +142,7 @@ class Doctor(CareStaff):
         rows = Resources.getCursor().fetchall()
         return rows 
 
+    #check if a patient is allergic to a given drug
     @staticmethod
     def patientIsAllergic(hcno, drugName):
         Resources.getCursor().execute(
@@ -135,6 +155,7 @@ class Doctor(CareStaff):
         row = Resources.getCursor().fetchone() 
         return row != None # True if the allergy exists
 
+    # add a diagnosis to the database
     @staticmethod
     def addDiagnosis(patientHcno, patientChartID, staffId, diagnosis):
         '''Check if the diagnosis is already located in that patient's chart'''
@@ -143,6 +164,7 @@ class Doctor(CareStaff):
             ''', (patientHcno, patientChartID, staffId, diagnosis))
         Resources.commit()
 
+    #add a medication to the database
     @staticmethod
     def addMedication(patientHcno, patientChartID, staffId, startDate, endDate, drugAmount, drugName):
         Resources.getCursor().execute('''
@@ -150,6 +172,7 @@ class Doctor(CareStaff):
             ''', (patientHcno, patientChartID, staffId, startDate, endDate, int(drugAmount), drugName))
         Resources.commit()
     
+    #get the suggested amount for a given drug and drugname
     @staticmethod
     def getSuggestedAmount(hcno, drugName):
         patientAgeGroup = Doctor.getPatientAgeGroup(hcno)
@@ -161,8 +184,10 @@ class Doctor(CareStaff):
             AND age_group = ?
             ''',(drugName,patientAgeGroup))
         row = Resources.getCursor().fetchone() 
-        return row[0]
+        amount = row[0] if row != None else -1
+        return amount
 
+    # get the agegroup for a give patient
     @staticmethod
     def getPatientAgeGroup(hcno):
         Resources.getCursor().execute(
@@ -174,6 +199,7 @@ class Doctor(CareStaff):
         row = Resources.getCursor().fetchone()
         return row[0]
 
+    #check if a given chart aleardy contatains a given diagnosis
     @staticmethod
     def diagnosisExistsForChart(chartNo, diagnosis):
         Resources.getCursor().execute(
@@ -186,6 +212,7 @@ class Doctor(CareStaff):
         row = Resources.getCursor().fetchone()
         return row != None
 
+    #check if the given string can be formated as a date
     @staticmethod
     def is_date(string):
         try: 
@@ -194,6 +221,7 @@ class Doctor(CareStaff):
         except ValueError:
             return False
 
+    # check if a given drug exists in the database
     @staticmethod 
     def drugExits(drugName):
         Resources.getCursor().execute(
@@ -204,8 +232,18 @@ class Doctor(CareStaff):
             ''',(drugName,))
         row = Resources.getCursor().fetchone()
         return row != None
+    
+    # get medication input from the user
+    @staticmethod
+    def getMedication():
+        medName = raw_input("Enter medication name: ")
+        medAmount = raw_input("Enter dosage amount: ")
+        medStart = raw_input("Enter medication start date: ")
+        medEnd = raw_input("Enter medication end date: ")
+        medDict = { "name" : medName, "amount" : medAmount, "start" : medStart, "end" : medEnd}
+        return medDict
 
-
+    # provide the user with menu options
     @staticmethod
     def showOptions():
         print
@@ -214,17 +252,17 @@ class Doctor(CareStaff):
         print("Add diagnois to chart - 'D'")
         print("Add sympotm to chart - 'S'")
         print("Add medication to chart - 'M'")
-        s = raw_input("Option? :'")
+        s = raw_input("Option? :")
         print("**********************************************************")
         print
         return s
 
+
+    #main event loop for Doctor
     @staticmethod
     def main(staff_id):
         CareStaff.staff_id = staff_id
-        print(type(CareStaff.staff_id))
-        print "From inside doc" + CareStaff.staff_id
-        # showOptions`
+        # showOptions
         while(1):
             selectedOption = Doctor.showOptions()
             if(selectedOption == 'E'):
@@ -240,13 +278,7 @@ class Doctor(CareStaff):
             else:
                 print("Invalid input try again.")
 
-    @staticmethod
-    def getMedication():
-        medName = raw_input("Enter medication name: ")
-        medAmount = raw_input("Enter dosage amount: ")
-        medStart = raw_input("Enter medication start date: ")
-        medEnd = raw_input("Enter medication end date: ")
-        medDict = { "name" : medName, "amount" : medAmount, "start" : medStart, "end" : medEnd}
-        return medDict
+    
+
 
 

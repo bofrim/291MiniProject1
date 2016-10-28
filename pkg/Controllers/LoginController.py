@@ -40,7 +40,7 @@ class Login:
 
 
         if staff_id is not None :
-            print "logged in"
+            print "Logged in"
             role = self.getRole(staff_id)
             self.loginAs[role](staff_id)
 

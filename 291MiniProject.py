@@ -22,7 +22,6 @@ def executeScriptsFromFile(filename,c):
 
 
 if not os.path.isfile("data.db"):
-    print "Here"
     # Initialize the tables
     conn = sqlite3.connect('data.db')
     c = conn.cursor()

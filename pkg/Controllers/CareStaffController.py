@@ -5,20 +5,25 @@ class CareStaff:
     staff_id = None
     name = None
 
+    #logical flow for viewing patient charts
     @staticmethod
-    def patientChartStory():
+    def patientChartStory(): 
         hcno = CareStaff.getHcno()
+        if(CareStaff.patientExists(hcno) == False):
+            print
+            print("Patient does not exist. Return to menu.")
+            return
         if(CareStaff.getPatientCharts(hcno) == False):
             return # no charts found
         chartNo = CareStaff.getChartNo()
         CareStaff.getChartInfo(hcno,chartNo)
 
-
+    #logical flow for adding a symptom
     @staticmethod
     def addSymptomStory():
-        print "from inside careStaff :" + CareStaff.staff_id
         hcno = CareStaff.getHcno()
         if(CareStaff.patientExists(hcno) == False):
+            print
             print("Patient does not exist. Return to menu.")
             return
         if(CareStaff.hasChartOpen(hcno) == False):
@@ -28,15 +33,20 @@ class CareStaff:
             else:
                 return
         mostRecentChartId = CareStaff.getMostRecentChart(hcno)
+        if(mostRecentChartId == -1 ):
+            print
+            print "Patient does not have any charts"
+            return
         symptomName = CareStaff.getSymptom()
         if(CareStaff.symptomExistsForChart(mostRecentChartId,symptomName) == True):
             print
             print "Latest Chart already has symptom '" + symptomName + "'" 
             return
         CareStaff.addSymptom( hcno, mostRecentChartId, CareStaff.staff_id, symptomName)
+        print "Symptom '" + symptomName + "' added to chart '" + mostRecentChartId + "'"
 
 
-
+    #print a list of charts for a given patient
     @staticmethod
     def getPatientCharts( patientHcno):
         Resources.getCursor().execute('''
@@ -48,16 +58,18 @@ class CareStaff:
         # print "Patient: ", patientHcno , "\n"
         result=Resources.getCursor().fetchall()
         if(len(result) == 0):
-            print "No charts exist for patient '" + patientHcno + "'"
             print
+            print "No charts exist for patient '" + patientHcno + "'"
             return False
         else:
+            print
             for row in result:
                 edate = row[2] if row[2]!= None else "None"
                 print "Chart Id: " + row[0] + " Start: " + row[1] + " End: " + edate
-                print
+            print
             return True
 
+    # get the lines from a given chart
     @staticmethod
     def getChartInfo( patientHcno, patientChartID):
         Resources.getCursor().execute('''
@@ -76,11 +88,15 @@ class CareStaff:
                 ''', (patientChartID,patientChartID,patientChartID))
         result=Resources.getCursor().fetchall()
         if(len(result) == 0):
+            print
             print "No lines exits for chart '" + patientChartID  + "'"
         else:
+            print
             for row in result:
                 print "Type: " + row[0] + " Date: " + row[1] + " Info: " + row[2]
         print
+
+    #add a symptom to the database
     @staticmethod
     def addSymptom( patientHcno, patientChartID, staffId, symptom):
 
@@ -89,6 +105,7 @@ class CareStaff:
             ''', (patientHcno, patientChartID, staffId, symptom))
         Resources.commit()
 
+    #check if a given patient has a chart open
     @staticmethod
     def hasChartOpen(patientChartId):
         Resources.getCursor().execute(
@@ -96,12 +113,13 @@ class CareStaff:
             SELECT edate
             FROM charts
             WHERE hcno = ?
-            ORDER BY edate;
+            ORDER BY adate DESC;
             ''',(patientChartId,))
         row = Resources.getCursor().fetchone()
         if(row == None): return False
         return row[0] == None # true if end Date is None
 
+    # create a new chart for a given patient
     @staticmethod
     def createChart( patientHcno):
         newChartId = CareStaff.getNewChartId()
@@ -111,6 +129,7 @@ class CareStaff:
             ''', (newChartId, patientHcno, None))
         Resources.commit()
 
+    # get the most recent chart for a given patient
     @staticmethod
     def getMostRecentChart( patientHcno):
         Resources.getCursor().execute(
@@ -118,11 +137,13 @@ class CareStaff:
             SELECT chart_id
             FROM charts
             WHERE hcno = ?
-            ORDER BY adate
+            ORDER BY adate DESC
             ''',(patientHcno,))
         row = Resources.getCursor().fetchone()
-        return row[0]
+        chart = row[0] if row != None else - 1
+        return chart
 
+    #check if a given patient exists in the database
     @staticmethod
     def patientExists(patientHcno):
         Resources.getCursor().execute(
@@ -134,6 +155,7 @@ class CareStaff:
         row = Resources.getCursor().fetchone()
         return row != None
 
+    # generate a new chartId
     @staticmethod
     def getNewChartId():
         Resources.getCursor().execute(
@@ -145,6 +167,7 @@ class CareStaff:
         newId = row[0] + 1
         return format(newId, '05') #will left pad w/ zeros up to 5 digets
 
+    # check if a chart already has an entry for a given system
     @staticmethod
     def symptomExistsForChart(chartNo, symptom):
         Resources.getCursor().execute(
