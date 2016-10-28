@@ -1,6 +1,7 @@
 from pkg.Controllers import LoginController
 import sqlite3
 from sqlite3 import OperationalError
+import os.path
 
 def executeScriptsFromFile(filename):
     # Open and read sql file
@@ -24,9 +25,10 @@ def executeScriptsFromFile(filename):
 # Connect to the database
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
-# Initialize the tables
-executeScriptsFromFile("initDb.sql")
-# Add the data
-executeScriptsFromFile("data.sql")
+if not os.path.isfile("data.db"):
+    # Initialize the tables
+    executeScriptsFromFile("initDb.sql")
+    # Add the data
+    executeScriptsFromFile("data.sql")
 # Start the program
 session = LoginController.Login(c)
